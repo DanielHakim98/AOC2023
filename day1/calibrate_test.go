@@ -11,6 +11,18 @@ func TestDay1(t *testing.T) {
 
 	tests := []test{
 		{
+			filename: "example part 1",
+			reader: func(string) ([]string, error) {
+				return []string{
+					"1abc2",
+					"pqr3stu8vwx",
+					"a1b2c3d4e5f",
+					"treb7uchet",
+				}, nil
+			},
+			want: 142,
+		},
+		{
 			filename: "fake_file",
 			reader: func(s string) ([]string, error) {
 				return []string{
@@ -19,6 +31,15 @@ func TestDay1(t *testing.T) {
 				}, nil
 			},
 			want: 112,
+		},
+		{
+			filename: "overlap",
+			reader: func(s string) ([]string, error) {
+				return []string{
+					"vqmoneight9tknqtcsmb",
+				}, nil
+			},
+			want: 19,
 		},
 	}
 
