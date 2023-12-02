@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -74,19 +75,32 @@ func Day1(filename string, reader func(string) ([]string, error)) int {
 	numbersInLines := make([][]NumInLine, 0)
 	for _, line := range lines {
 		occurences := make([]NumInLine, 0)
-		for k, v := range possibleVals {
-			if strings.Contains(line, k) {
-				start := strings.Index(line, k)
-				data := NumInLine{
-					Index: start,
-					Data:  v,
+		for key, digit := range possibleVals {
+
+			// I know it could be simpler. But found out the problem
+			// previously is how I handle when a line contains
+			// something like "oneeightwone"
+			// by right, it should have 4 elements in 'occurences'
+			// but due to issue not considering duplicate occurences
+			// it only capture 3 elements because "one" only detects
+			// index at first occurence
+			if strings.Contains(line, key) {
+				pattern := regexp.MustCompile(key)
+				matches := pattern.FindAllStringIndex(line, -1)
+				for _, match := range matches {
+					index := match[0]
+					data := NumInLine{
+						Index: index,
+						Data:  digit,
+					}
+					occurences = append(occurences, data)
 				}
-				occurences = append(occurences, data)
 			}
 		}
 		sort.Slice(occurences, func(i, j int) bool {
 			return occurences[i].Index < occurences[j].Index
 		})
+		fmt.Println(occurences)
 		numbersInLines = append(numbersInLines, occurences)
 	}
 
