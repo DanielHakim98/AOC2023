@@ -65,8 +65,8 @@ func (n NumInLine) String() string {
 	return fmt.Sprintf(`NumInLine{Index: %v,  Data: %v}`, n.Index, n.Data)
 }
 
-func Day1(filename string) int {
-	lines, err := GetInput(filename)
+func Day1(filename string, reader func(string) ([]string, error)) int {
+	lines, err := reader(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
