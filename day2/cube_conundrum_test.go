@@ -28,9 +28,10 @@ func TestDay1(t *testing.T) {
 		},
 	}
 
+	challenges := Day2{}
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("testing '%v'", tc.filename), func(t *testing.T) {
-			got := Day2(tc.filename, tc.reader)
+			got := challenges.PartOne(tc.filename, tc.reader)
 			if got != tc.want {
 				t.Errorf("got %v, want %v", got, tc.want)
 			}

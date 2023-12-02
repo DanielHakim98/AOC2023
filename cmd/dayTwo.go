@@ -25,7 +25,8 @@ to quickly create a Cobra application.`,
 		if len(args) != 1 {
 			log.Fatal("No filename is passed in")
 		}
-		fmt.Println("sum of possible games ids: ", day2.Day2(args[0], day2.GetInput))
+		d := day2.Day2{}
+		fmt.Println("sum of possible games ids: ", d.PartOne(args[0], day2.GetInput))
 	},
 }
 

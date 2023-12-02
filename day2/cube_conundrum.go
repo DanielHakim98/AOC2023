@@ -35,7 +35,9 @@ func GetInput(filename string) ([]string, error) {
 	return lines, nil
 }
 
-func Day2(filename string, reader func(string) ([]string, error)) int {
+type Day2 struct{}
+
+func (d *Day2) PartOne(filename string, reader func(string) ([]string, error)) int {
 	games, err := reader(filename)
 	if err != nil {
 		log.Fatal(err)
@@ -43,8 +45,8 @@ func Day2(filename string, reader func(string) ([]string, error)) int {
 
 	sum := 0
 	for _, game := range games {
-		g := ParseGame(game)
-		if valid := CheckGame(g); valid {
+		g := d.ParseGame(game)
+		if valid := d.CheckGame(g); valid {
 			sum += g.Id
 		}
 	}
@@ -57,7 +59,7 @@ type Game struct {
 	Sets []map[string]int
 }
 
-func ParseGame(game string) Game {
+func (day2 *Day2) ParseGame(game string) Game {
 	g := strings.Split(game, ":")
 
 	// Get Id
@@ -92,7 +94,7 @@ var bags = map[string]int{
 	"blue":  14,
 }
 
-func CheckGame(game Game) bool {
+func (day2 *Day2) CheckGame(game Game) bool {
 	for _, set := range game.Sets {
 		greenInvalid := set["green"] > bags["green"]
 		blueInvalid := set["blue"] > bags["blue"]
