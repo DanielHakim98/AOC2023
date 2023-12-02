@@ -25,7 +25,7 @@ to quickly create a Cobra application.`,
 		if len(args) != 1 {
 			log.Fatal("No filename is passed in")
 		}
-		fmt.Println("sum of calibration values: ", day1.Day1(args[0], day1.GetInput))
+		fmt.Println("sum of calibration values: ", day1.PartTwo(args[0], day1.GetInput))
 	},
 }
 

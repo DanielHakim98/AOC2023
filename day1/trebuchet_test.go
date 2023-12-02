@@ -53,7 +53,7 @@ func TestDay1(t *testing.T) {
 	}
 
 	for _, uc := range tests {
-		got := Day1(uc.filename, uc.reader)
+		got := PartTwo(uc.filename, uc.reader)
 		if got != uc.want {
 			t.Fatalf("expected: %v, got: %v", uc.want, got)
 		}
