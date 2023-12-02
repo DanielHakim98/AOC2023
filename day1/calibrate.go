@@ -104,7 +104,7 @@ func Day1(filename string, reader func(string) ([]string, error)) int {
 		}
 	}
 
-	// // // 4. Sum of all calibrators
+	// 4. Sum of all calibrators
 	sum := 0
 	for _, calibrator := range calibrators {
 		v, _ := strconv.Atoi(calibrator)
