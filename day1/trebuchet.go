@@ -40,27 +40,6 @@ func GetInput(filename string) ([]string, error) {
 	return lines, nil
 }
 
-var possibleVals = map[string]string{
-	"one":   "1",
-	"two":   "2",
-	"three": "3",
-	"four":  "4",
-	"five":  "5",
-	"six":   "6",
-	"seven": "7",
-	"eight": "8",
-	"nine":  "9",
-	"1":     "1",
-	"2":     "2",
-	"3":     "3",
-	"4":     "4",
-	"5":     "5",
-	"6":     "6",
-	"7":     "7",
-	"8":     "8",
-	"9":     "9",
-}
-
 type NumInLine struct {
 	Index int
 	Data  string
@@ -71,18 +50,6 @@ func (n NumInLine) String() string {
 }
 
 type Day1 struct{}
-
-var digits = map[string]string{
-	"1": "1",
-	"2": "2",
-	"3": "3",
-	"4": "4",
-	"5": "5",
-	"6": "6",
-	"7": "7",
-	"8": "8",
-	"9": "9",
-}
 
 func (d *Day1) PartOne(filename string, reader func(string) ([]string, error)) int {
 	lines, err := reader(filename)
@@ -97,6 +64,18 @@ func (d *Day1) PartOne(filename string, reader func(string) ([]string, error)) i
 	}
 
 	return sum
+}
+
+var digits = map[string]string{
+	"1": "1",
+	"2": "2",
+	"3": "3",
+	"4": "4",
+	"5": "5",
+	"6": "6",
+	"7": "7",
+	"8": "8",
+	"9": "9",
 }
 
 func (d *Day1) ParseRecordSimple(record string) []NumInLine {
@@ -136,9 +115,30 @@ func (d *Day1) PartTwo(filename string, reader func(string) ([]string, error)) i
 	return sum
 }
 
+var digitsLetters = map[string]string{
+	"one":   "1",
+	"two":   "2",
+	"three": "3",
+	"four":  "4",
+	"five":  "5",
+	"six":   "6",
+	"seven": "7",
+	"eight": "8",
+	"nine":  "9",
+	"1":     "1",
+	"2":     "2",
+	"3":     "3",
+	"4":     "4",
+	"5":     "5",
+	"6":     "6",
+	"7":     "7",
+	"8":     "8",
+	"9":     "9",
+}
+
 func (d *Day1) ParseRecord(record string) []NumInLine {
 	occurences := make([]NumInLine, 0)
-	for key, digit := range possibleVals {
+	for key, digit := range digitsLetters {
 
 		// I know it could be simpler. But found out the problem
 		// previously is how I handle when a line contains
