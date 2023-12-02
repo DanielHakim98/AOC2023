@@ -10,9 +10,11 @@ import (
 	"strings"
 )
 
-func GetInput() ([]string, error) {
+func GetInput(filename string) ([]string, error) {
+
+	path := fmt.Sprintf("./day1/%v.txt", filename)
 	// 1. Open file
-	file, err := os.Open("./day1/input.txt")
+	file, err := os.Open(path)
 	if err != nil {
 		return nil, err
 	}
@@ -63,8 +65,8 @@ func (n NumInLine) String() string {
 	return fmt.Sprintf(`NumInLine{Index: %v,  Data: %v}`, n.Index, n.Data)
 }
 
-func Day1() {
-	lines, err := GetInput()
+func Day1(filename string) int {
+	lines, err := GetInput(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -109,5 +111,5 @@ func Day1() {
 		sum += v
 	}
 
-	fmt.Println("sum of calibration values: ", sum)
+	return sum
 }
