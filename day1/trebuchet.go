@@ -19,7 +19,11 @@ func GetInput(filename string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
+	defer func() {
+		if cerr := file.Close(); cerr != nil && err == nil {
+			err = cerr
+		}
+	}()
 
 	// 2. Read line by line
 	scanner := bufio.NewScanner(file)
@@ -72,58 +76,57 @@ func Day1(filename string, reader func(string) ([]string, error)) int {
 		log.Fatal(err)
 	}
 
-	numbersInLines := make([][]NumInLine, 0)
-	for _, line := range lines {
-		occurences := make([]NumInLine, 0)
-		for key, digit := range possibleVals {
-
-			// I know it could be simpler. But found out the problem
-			// previously is how I handle when a line contains
-			// something like "oneeightwone"
-			// by right, it should have 4 elements in 'occurences'
-			// but due to issue not considering duplicate occurences
-			// it only capture 3 elements because "one" only detects
-			// index at first occurence
-			if strings.Contains(line, key) {
-				pattern := regexp.MustCompile(key)
-				matches := pattern.FindAllStringIndex(line, -1)
-				for _, match := range matches {
-					index := match[0]
-					data := NumInLine{
-						Index: index,
-						Data:  digit,
-					}
-					occurences = append(occurences, data)
-				}
-			}
-		}
-		sort.Slice(occurences, func(i, j int) bool {
-			return occurences[i].Index < occurences[j].Index
-		})
-		// fmt.Println(occurences)
-		numbersInLines = append(numbersInLines, occurences)
-	}
-
-	// 3. Get first occurence of first digit and last occurences of last digit
-	calibrators := make([]string, 0)
-	for _, line := range numbersInLines {
-		if len(line) == 0 {
-			continue
-		} else if len(line) == 1 {
-			// 3.1. If there is only 1 digit, then it's "<digit><digit>"
-			calibrators = append(calibrators, line[0].Data+line[0].Data)
-		} else {
-			// 3.2. Concat first digit and last digit as "<first digit><last digit>"
-			calibrators = append(calibrators, line[0].Data+line[len(line)-1].Data)
-		}
-	}
-
-	// 4. Sum of all calibrators
 	sum := 0
-	for _, calibrator := range calibrators {
-		v, _ := strconv.Atoi(calibrator)
-		sum += v
+	for _, line := range lines {
+		n := ParseRecord(line)
+		sum += ConvertToNumber(n)
 	}
 
 	return sum
+}
+
+func ParseRecord(record string) []NumInLine {
+	occurences := make([]NumInLine, 0)
+	for key, digit := range possibleVals {
+
+		// I know it could be simpler. But found out the problem
+		// previously is how I handle when a line contains
+		// something like "oneeightwone"
+		// by right, it should have 4 elements in 'occurences'
+		// but due to issue not considering duplicate occurences
+		// it only capture 3 elements because "one" only detects
+		// index at first occurence
+		if strings.Contains(record, key) {
+			pattern := regexp.MustCompile(key)
+			matches := pattern.FindAllStringIndex(record, -1)
+			for _, match := range matches {
+				index := match[0]
+				data := NumInLine{
+					Index: index,
+					Data:  digit,
+				}
+				occurences = append(occurences, data)
+			}
+		}
+	}
+	sort.Slice(occurences, func(i, j int) bool {
+		return occurences[i].Index < occurences[j].Index
+	})
+	return occurences
+}
+
+func ConvertToNumber(n []NumInLine) int {
+	var num int
+	if len(n) == 0 {
+		return 0
+	} else if len(n) == 1 {
+		// 3.1. If there is only 1 digit, then it's "<digit><digit>"
+		v, _ := strconv.Atoi(n[0].Data + n[0].Data)
+		num = v
+	} else {
+		// 3.2. Concat first digit and last digit as "<first digit><last digit>"
+		v, _ := strconv.Atoi(n[0].Data + n[len(n)-1].Data)
+		num = v
+	}
+	return num
 }
