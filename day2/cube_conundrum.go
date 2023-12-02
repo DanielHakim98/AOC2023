@@ -31,13 +31,6 @@ func GetInput(filename string) ([]string, error) {
 	return lines, nil
 }
 
-// only 12 red cubes, 13 green cubes, and 14 blue cubes?
-var bags = map[string]int{
-	"red":   12,
-	"green": 13,
-	"blue":  14,
-}
-
 func Day2(filename string, reader func(string) ([]string, error)) int {
 	games, err := reader(filename)
 	if err != nil {
@@ -86,6 +79,13 @@ func ParseGame(game string) Game {
 		Id:   id,
 		Sets: collected,
 	}
+}
+
+// only 12 red cubes, 13 green cubes, and 14 blue cubes
+var bags = map[string]int{
+	"red":   12,
+	"green": 13,
+	"blue":  14,
 }
 
 func CheckGame(game Game) bool {
