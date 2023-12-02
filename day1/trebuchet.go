@@ -70,7 +70,9 @@ func (n NumInLine) String() string {
 	return fmt.Sprintf(`NumInLine{Index: %v,  Data: %v}`, n.Index, n.Data)
 }
 
-func PartTwo(filename string, reader func(string) ([]string, error)) int {
+type Day1 struct{}
+
+func (d *Day1) PartTwo(filename string, reader func(string) ([]string, error)) int {
 	lines, err := reader(filename)
 	if err != nil {
 		log.Fatal(err)
@@ -78,14 +80,14 @@ func PartTwo(filename string, reader func(string) ([]string, error)) int {
 
 	sum := 0
 	for _, line := range lines {
-		n := ParseRecord(line)
-		sum += ConvertToNumber(n)
+		n := d.ParseRecord(line)
+		sum += d.ConvertToNumber(n)
 	}
 
 	return sum
 }
 
-func ParseRecord(record string) []NumInLine {
+func (d *Day1) ParseRecord(record string) []NumInLine {
 	occurences := make([]NumInLine, 0)
 	for key, digit := range possibleVals {
 
@@ -115,7 +117,7 @@ func ParseRecord(record string) []NumInLine {
 	return occurences
 }
 
-func ConvertToNumber(n []NumInLine) int {
+func (d *Day1) ConvertToNumber(n []NumInLine) int {
 	var num int
 	if len(n) == 0 {
 		return 0

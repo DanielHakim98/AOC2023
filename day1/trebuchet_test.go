@@ -1,17 +1,21 @@
 package day1
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
-func TestDay1(t *testing.T) {
-	type test struct {
-		filename string
-		reader   func(string) ([]string, error)
-		want     int
-	}
+type Test struct {
+	filename string
+	reader   func(string) ([]string, error)
+	want     int
+}
 
-	tests := []test{
+func TestDay1Part2(t *testing.T) {
+
+	testCases := []Test{
 		{
-			filename: "example part 1",
+			filename: "example_part1",
 			reader: func(string) ([]string, error) {
 				return []string{
 					"1abc2",
@@ -42,7 +46,7 @@ func TestDay1(t *testing.T) {
 			want: 19,
 		},
 		{
-			filename: "very edgy",
+			filename: "very_edgy",
 			reader: func(s string) ([]string, error) {
 				return []string{
 					"oneeightwone",
@@ -52,10 +56,13 @@ func TestDay1(t *testing.T) {
 		},
 	}
 
-	for _, uc := range tests {
-		got := PartTwo(uc.filename, uc.reader)
-		if got != uc.want {
-			t.Fatalf("expected: %v, got: %v", uc.want, got)
-		}
+	challenges := Day1{}
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("testing '%v'", tc.filename), func(t *testing.T) {
+			got := challenges.PartTwo(tc.filename, tc.reader)
+			if got != tc.want {
+				t.Errorf("got %v, want %v", got, tc.want)
+			}
+		})
 	}
 }
