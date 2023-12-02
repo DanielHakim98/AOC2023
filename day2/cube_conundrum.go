@@ -43,9 +43,16 @@ func Day2(filename string, reader func(string) ([]string, error)) int {
 	if err != nil {
 		log.Fatal(err)
 	}
-	g := ParseGame(games[0])
-	fmt.Println(g)
-	return 0
+
+	sum := 0
+	for _, game := range games {
+		g := ParseGame(game)
+		if valid := CheckGame(g); valid {
+			sum += g.Id
+		}
+	}
+
+	return sum
 }
 
 type Game struct {
@@ -79,4 +86,17 @@ func ParseGame(game string) Game {
 		Id:   id,
 		Sets: collected,
 	}
+}
+
+func CheckGame(game Game) bool {
+	for _, set := range game.Sets {
+		greenInvalid := set["green"] > bags["green"]
+		blueInvalid := set["blue"] > bags["blue"]
+		redInvalid := set["red"] > bags["red"]
+
+		if greenInvalid || blueInvalid || redInvalid {
+			return false
+		}
+	}
+	return true
 }
