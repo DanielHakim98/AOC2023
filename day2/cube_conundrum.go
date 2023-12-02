@@ -108,5 +108,60 @@ func (day2 *Day2) CheckGame(game Game) bool {
 }
 
 func (d *Day2) PartTwo(filename string, reader func(string) ([]string, error)) int {
-	return 0
+	games, err := reader(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	sum := 0
+	for _, game := range games {
+		g := d.ParseGame(game)
+		min := d.CalculateMinCubes(g)
+		sum += min.Green * min.Blue * min.Red
+	}
+
+	return sum
+}
+
+func (day *Day2) CalculateMinCubes(game Game) struct {
+	Green int
+	Blue  int
+	Red   int
+} {
+	maxGreen := 0
+	maxBlue := 0
+	maxRed := 0
+
+	var minCubes struct {
+		Green int
+		Blue  int
+		Red   int
+	}
+	for i, set := range game.Sets {
+		if i == 0 {
+			maxGreen = set["green"]
+			maxBlue = set["blue"]
+			maxRed = set["red"]
+			continue
+		}
+
+		currentGreen := set["green"]
+		if currentGreen > maxGreen {
+			maxGreen = currentGreen
+		}
+		currentBlue := set["blue"]
+		if currentBlue > maxBlue {
+			maxBlue = currentBlue
+		}
+
+		currentRed := set["red"]
+		if currentRed > maxRed {
+			maxRed = currentRed
+		}
+	}
+
+	minCubes.Green = maxGreen
+	minCubes.Blue = maxBlue
+	minCubes.Red = maxRed
+
+	return minCubes
 }
