@@ -106,3 +106,7 @@ func (day2 *Day2) CheckGame(game Game) bool {
 	}
 	return true
 }
+
+func (d *Day2) PartTwo(filename string, reader func(string) ([]string, error)) int {
+	return 0
+}

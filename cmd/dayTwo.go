@@ -12,6 +12,7 @@ import (
 )
 
 // dayTwoCmd represents the dayTwo command
+var part int
 var dayTwoCmd = &cobra.Command{
 	Use:   "dayTwo",
 	Short: "A brief description of your command",
@@ -26,7 +27,15 @@ to quickly create a Cobra application.`,
 			log.Fatal("No filename is passed in")
 		}
 		d := day2.Day2{}
-		fmt.Println("sum of possible games ids: ", d.PartOne(args[0], day2.GetInput))
+		switch part {
+		case 1:
+			fmt.Println("sum of possible games ids: ", d.PartOne(args[0], day2.GetInput))
+		case 2:
+			fmt.Println("sum of power of minimum cube requiere from games: ", d.PartTwo(args[0], day2.GetInput))
+		default:
+			log.Fatal("Invalid 'part' flag")
+		}
+
 	},
 }
 
@@ -41,5 +50,5 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// dayTwoCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	dayTwoCmd.Flags().IntVarP(&part, "part", "p", 0, "part to run")
 }
