@@ -12,7 +12,7 @@ import (
 
 func GetInput() ([]string, error) {
 	// 1. Open file
-	file, err := os.Open("./day1/input_less.txt")
+	file, err := os.Open("./day1/input.txt")
 	if err != nil {
 		return nil, err
 	}
