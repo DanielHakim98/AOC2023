@@ -41,6 +41,15 @@ func TestDay1(t *testing.T) {
 			},
 			want: 19,
 		},
+		{
+			filename: "very edgy",
+			reader: func(s string) ([]string, error) {
+				return []string{
+					"oneeightwone",
+				}, nil
+			},
+			want: 11,
+		},
 	}
 
 	for _, uc := range tests {
