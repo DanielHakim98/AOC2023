@@ -12,7 +12,6 @@ import (
 )
 
 // dayTwoCmd represents the dayTwo command
-var part int
 var dayTwoCmd = &cobra.Command{
 	Use:   "dayTwo",
 	Short: "A brief description of your command",
@@ -31,7 +30,7 @@ to quickly create a Cobra application.`,
 		case 1:
 			fmt.Println("sum of possible games ids: ", d.PartOne(args[0], day2.GetInput))
 		case 2:
-			fmt.Println("sum of power of minimum cube required from games: ", d.PartTwo(args[0], day2.GetInput))
+			fmt.Println("sum of power of minimum cube requires from games: ", d.PartTwo(args[0], day2.GetInput))
 		default:
 			log.Fatal("Invalid 'part' flag")
 		}

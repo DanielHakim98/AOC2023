@@ -11,8 +11,7 @@ type Test struct {
 	want     int
 }
 
-func TestDay1Part2(t *testing.T) {
-
+func TestDay1Part1(t *testing.T) {
 	testCases := []Test{
 		{
 			filename: "example_part1",
@@ -26,15 +25,34 @@ func TestDay1Part2(t *testing.T) {
 			},
 			want: 142,
 		},
+	}
+
+	challenges := Day1{}
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("testing '%v'", tc.filename), func(t *testing.T) {
+			got := challenges.PartOne(tc.filename, tc.reader)
+			if got != tc.want {
+				t.Errorf("got %v, want %v", got, tc.want)
+			}
+		})
+	}
+}
+func TestDay1Part2(t *testing.T) {
+	testCases := []Test{
 		{
-			filename: "fake_file",
+			filename: "example_part1",
 			reader: func(s string) ([]string, error) {
 				return []string{
 					"two1nine",
 					"eightwothree",
+					"abcone2threexyz",
+					"xtwone3four",
+					"4nineeightseven2",
+					"zoneight234",
+					"7pqrstsixteen",
 				}, nil
 			},
-			want: 112,
+			want: 281,
 		},
 		{
 			filename: "overlap",

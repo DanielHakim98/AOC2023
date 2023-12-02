@@ -72,6 +72,55 @@ func (n NumInLine) String() string {
 
 type Day1 struct{}
 
+var digits = map[string]string{
+	"1": "1",
+	"2": "2",
+	"3": "3",
+	"4": "4",
+	"5": "5",
+	"6": "6",
+	"7": "7",
+	"8": "8",
+	"9": "9",
+}
+
+func (d *Day1) PartOne(filename string, reader func(string) ([]string, error)) int {
+	lines, err := reader(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	sum := 0
+	for _, line := range lines {
+		n := d.ParseRecordSimple(line)
+		sum += d.ConvertToNumber(n)
+	}
+
+	return sum
+}
+
+func (d *Day1) ParseRecordSimple(record string) []NumInLine {
+	occurences := make([]NumInLine, 0)
+	for key, digit := range digits {
+		if strings.Contains(record, key) {
+			pattern := regexp.MustCompile(key)
+			matches := pattern.FindAllStringIndex(record, -1)
+			for _, match := range matches {
+				index := match[0]
+				data := NumInLine{
+					Index: index,
+					Data:  digit,
+				}
+				occurences = append(occurences, data)
+			}
+		}
+	}
+	sort.Slice(occurences, func(i, j int) bool {
+		return occurences[i].Index < occurences[j].Index
+	})
+	return occurences
+}
+
 func (d *Day1) PartTwo(filename string, reader func(string) ([]string, error)) int {
 	lines, err := reader(filename)
 	if err != nil {

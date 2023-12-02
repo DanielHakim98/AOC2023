@@ -26,13 +26,22 @@ to quickly create a Cobra application.`,
 			log.Fatal("No filename is passed in")
 		}
 		d := day1.Day1{}
-		fmt.Println("sum of calibration values: ", d.PartTwo(args[0], day1.GetInput))
+		display := "sum of calibration values: "
+		switch part {
+		case 1:
+			fmt.Println(display, d.PartOne(args[0], day1.GetInput))
+		case 2:
+			fmt.Println(display, d.PartTwo(args[0], day1.GetInput))
+		default:
+			log.Fatal("Invalid 'part' flag")
+		}
+
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(dayOneCmd)
-
+	dayOneCmd.Flags().IntVarP(&part, "part", "p", 0, "part to run")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
