@@ -100,7 +100,7 @@ func Day1(filename string, reader func(string) ([]string, error)) int {
 		sort.Slice(occurences, func(i, j int) bool {
 			return occurences[i].Index < occurences[j].Index
 		})
-		fmt.Println(occurences)
+		// fmt.Println(occurences)
 		numbersInLines = append(numbersInLines, occurences)
 	}
 
