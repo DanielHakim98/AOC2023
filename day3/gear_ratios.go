@@ -40,6 +40,30 @@ func (d *Day3) PartOne(filename string, reader func(string) ([]string, error)) i
 	if err != nil {
 		log.Fatal(err)
 	}
+	size := d.GetSize(&lines)
 
-	return len(lines)
+	fmt.Println(size)
+	return 0
+}
+
+type BoardSize struct {
+	Row int
+	Col int
+}
+
+func (bd BoardSize) String() string {
+	return fmt.Sprintf("BoardSize(%v, %v)", bd.Row, bd.Col)
+}
+func (d *Day3) GetSize(lines *[]string) BoardSize {
+	row := len(*lines)
+	if row == 0 {
+		return BoardSize{}
+	}
+
+	col := len((*lines)[0])
+
+	return BoardSize{
+		Row: row,
+		Col: col,
+	}
 }
