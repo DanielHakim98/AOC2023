@@ -42,31 +42,10 @@ func (d *Day3) PartOne(filename string, reader func(string) ([]string, error)) i
 		log.Fatal(err)
 	}
 
-	// size := d.GetSize(&lines)
-	// fmt.Println(size)
-
-	lastIdx := len(lines) - 1
 	for i, line := range lines {
-		currentNums := d.FindNumberInRow(line, i)
-		if i == 0 {
-			nextNums := d.FindNumberInRow(lines[i+1], i+1)
-			fmt.Println("currentNums: ", currentNums)
-			fmt.Println("nextNums: ", nextNums)
-			fmt.Println()
-		} else if i == lastIdx {
-			prevNums := d.FindNumberInRow(lines[i-1], i-1)
-			fmt.Println("prevNums: ", prevNums)
-			fmt.Println("currentNums: ", currentNums)
-			fmt.Println()
-		} else {
-			prevNums := d.FindNumberInRow(lines[i-1], i-1)
-			nextNums := d.FindNumberInRow(lines[i+1], i+1)
-			fmt.Println("prevNums: ", prevNums)
-			fmt.Println("currentNums: ", currentNums)
-			fmt.Println("nextNums: ", nextNums)
-			fmt.Println()
-		}
-
+		fmt.Println(d.FindSymbol(line, i))
+		fmt.Println(d.FindNumberInRow(line, i))
+		fmt.Println()
 	}
 	return 0
 }
@@ -94,30 +73,65 @@ func (d *Day3) GetSize(lines *[]string) BoardSize {
 	}
 }
 
-type NumInRow struct {
-	Values      string
+type NumGroup struct {
+	Value string
+	List  map[NumSingle]Coordinates
+}
+
+type Coordinates []int
+type NumSingle struct {
+	Value    string
+	Row, Col int
+}
+
+func (nr NumSingle) String() string {
+	return fmt.Sprintf("{v: \"%v\"}", nr.Value)
+}
+
+func (d *Day3) FindNumberInRow(line string, row int) []NumGroup {
+	re := regexp.MustCompile("[0-9]+")
+	matches := re.FindAllStringIndex(line, -1)
+	var numInRows []NumGroup
+
+	for _, match := range matches {
+		i := match[0]
+		limit := match[1]
+		fullNum := line[i:limit]
+		nums := make(map[NumSingle]Coordinates)
+		for ; i < limit; i++ {
+			val := string(line[i])
+			num := NumSingle{
+				Value: val,
+				Row:   row,
+				Col:   i,
+			}
+			nums[num] = []int{num.Row, num.Col}
+		}
+		numInRows = append(numInRows, NumGroup{
+			Value: fullNum,
+			List:  nums,
+		})
+	}
+	return numInRows
+}
+
+type Symbol struct {
+	Value       string
 	Coordinates []int
 }
 
-func (nr NumInRow) String() string {
-	return fmt.Sprintf("NumInRow( Values: %v, Coordinates: %v)", nr.Values, nr.Coordinates)
-}
-
-func (d *Day3) FindNumberInRow(line string, row int) []NumInRow {
-	re := regexp.MustCompile("[0-9]+")
+func (d *Day3) FindSymbol(line string, row int) []Symbol {
+	re := regexp.MustCompile("[^.0-9]+")
 	matches := re.FindAllStringIndex(line, -1)
-	var nums []NumInRow
+	var symbols []Symbol
 	for _, match := range matches {
 		first := match[0]
 		last := match[1]
-		num := line[first:last]
-		nums = append(nums, NumInRow{
-			Values: num,
-			Coordinates: []int{
-				row,
-				first,
-			},
+		symbol := line[first:last]
+		symbols = append(symbols, Symbol{
+			Value:       symbol,
+			Coordinates: []int{row, first},
 		})
 	}
-	return nums
+	return symbols
 }
