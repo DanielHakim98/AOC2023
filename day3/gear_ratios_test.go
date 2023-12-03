@@ -44,3 +44,35 @@ func TestDay3Part1(t *testing.T) {
 	}
 
 }
+
+func TestDay3Part2(t *testing.T) {
+	testCases := []Test{
+		{
+			filename: "example_part1",
+			reader: func(string) ([]string, error) {
+				return []string{
+					"467..114..",
+					"...*......",
+					"..35..633.",
+					"......#...",
+					"617*......",
+					".....+.58.",
+					"..592.....",
+					"......755.",
+					"...$.*....",
+					".664.598..",
+				}, nil
+			},
+			want: 467835,
+		},
+	}
+	challenges := Day3{}
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("testing '%v'", tc.filename), func(t *testing.T) {
+			got := challenges.PartTwo(tc.filename, tc.reader)
+			if got != tc.want {
+				t.Errorf("got %v, want %v", got, tc.want)
+			}
+		})
+	}
+}

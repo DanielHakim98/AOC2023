@@ -30,7 +30,7 @@ to quickly create a Cobra application.`,
 		case 1:
 			fmt.Println("sum of all part numbers in engine schematic: ", d.PartOne(args[0], day3.GetInput))
 		case 2:
-			fmt.Println("Part 2 is called")
+			fmt.Println("sum of all gear ratios in engine schematic: ", d.PartTwo(args[0], day3.GetInput))
 		default:
 			log.Fatal("Invalid 'part' flag")
 		}

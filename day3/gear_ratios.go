@@ -157,3 +157,11 @@ func (d *Day3) GetSize(lines *[]string) BoardSize {
 	}
 }
 */
+
+func (d *Day3) PartTwo(filename string, reader func(string) ([]string, error)) int {
+	lines, err := reader(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return len(lines)
+}
