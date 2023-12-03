@@ -36,15 +36,58 @@ func GetInput(filename string) ([]string, error) {
 
 type Day3 struct{}
 
+const (
+	SHOW_PREV_NUMS       = "prevNums: "
+	SHOW_CURRENT_NUMS    = "currentNums: "
+	SHOW_NEXT_NUMS       = "nextNums: "
+	SHOW_PREV_SYMBOLS    = "prevSymbols: "
+	SHOW_CURRENT_SYMBOLS = "currentSymbols: "
+	SHOW_NEXT_SYMBOLS    = "nextSymbols: "
+)
+
 func (d *Day3) PartOne(filename string, reader func(string) ([]string, error)) int {
 	lines, err := reader(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	lastIdx := len(lines) - 1
 	for i, line := range lines {
-		fmt.Println(d.FindSymbol(line, i))
-		fmt.Println(d.FindNumberInRow(line, i))
+		currentNums := d.FindNumberInRow(line, i)
+		currentSymbols := d.FindSymbol(line, i)
+		if i == 0 {
+			fmt.Println(SHOW_CURRENT_NUMS, currentNums)
+			fmt.Println(SHOW_CURRENT_SYMBOLS, currentSymbols)
+
+			nextNums := d.FindNumberInRow(lines[i+1], i+1)
+			fmt.Println(SHOW_NEXT_NUMS, nextNums)
+			nextSymbols := d.FindSymbol(lines[i+1], i+1)
+			fmt.Println(SHOW_NEXT_SYMBOLS, nextSymbols)
+
+		} else if i == lastIdx {
+			prevNums := d.FindNumberInRow(lines[i-1], i-1)
+			fmt.Println(SHOW_PREV_NUMS, prevNums)
+			prevSymbols := d.FindSymbol(lines[i-1], i-1)
+			fmt.Println(SHOW_PREV_SYMBOLS, prevSymbols)
+
+			fmt.Println(SHOW_CURRENT_NUMS, currentNums)
+			fmt.Println(SHOW_CURRENT_SYMBOLS, currentSymbols)
+
+		} else {
+			prevNums := d.FindNumberInRow(lines[i-1], i-1)
+			fmt.Println(SHOW_PREV_NUMS, prevNums)
+			prevSymbols := d.FindSymbol(lines[i-1], i-1)
+			fmt.Println(SHOW_PREV_SYMBOLS, prevSymbols)
+
+			fmt.Println(SHOW_CURRENT_NUMS, currentNums)
+			fmt.Println(SHOW_CURRENT_SYMBOLS, currentSymbols)
+
+			nextNums := d.FindNumberInRow(lines[i+1], i+1)
+			fmt.Println(SHOW_NEXT_NUMS, nextNums)
+			nextSymbols := d.FindSymbol(lines[i+1], i+1)
+			fmt.Println(SHOW_NEXT_SYMBOLS, nextSymbols)
+
+		}
 		fmt.Println()
 	}
 	return 0
