@@ -163,5 +163,86 @@ func (d *Day3) PartTwo(filename string, reader func(string) ([]string, error)) i
 	if err != nil {
 		log.Fatal(err)
 	}
-	return len(lines)
+
+	numberRefs := make(map[string]PartNumber)
+	symbolsRef := make(map[string][]int)
+	for i, line := range lines {
+		symbols := d.FindAsteriskSymbol(line, i)
+		for k, v := range symbols {
+			symbolsRef[k] = v
+		}
+
+		numInRows := d.FindNumberInRow(line, i)
+		for _, num := range numInRows {
+			for k, v := range num.List {
+				numberRefs[k] = PartNumber{
+					Value:       num.Value,
+					Coordinates: v,
+				}
+			}
+		}
+	}
+
+	var sum int
+	for _, v := range symbolsRef {
+		nums := d.CheckGearNearby(v, numberRefs)
+		if len(nums) == 2 {
+			v1, _ := strconv.Atoi(nums[0])
+			v2, _ := strconv.Atoi(nums[1])
+
+			sum += v1 * v2
+		}
+	}
+	return sum
+}
+
+func (d *Day3) FindAsteriskSymbol(line string, row int) map[string][]int {
+	re := regexp.MustCompile("[*]")
+	matches := re.FindAllStringIndex(line, -1)
+
+	symbols := make(map[string][]int)
+	for _, match := range matches {
+		first := match[0]
+		symbols[fmt.Sprintf(COORDINATES_TEMPLATE, row, first)] = []int{row, first}
+	}
+	return symbols
+}
+
+type PartNumber struct {
+	Value string
+	Coordinates
+}
+
+func (d *Day3) CheckGearNearby(coord Coordinates, numbersRef map[string]PartNumber) []string {
+	row := coord[0]
+	col := coord[1]
+
+	up := fmt.Sprintf(COORDINATES_TEMPLATE, row-1, col)
+	down := fmt.Sprintf(COORDINATES_TEMPLATE, row+1, col)
+	left := fmt.Sprintf(COORDINATES_TEMPLATE, row, col-1)
+	right := fmt.Sprintf(COORDINATES_TEMPLATE, row, col+1)
+	diagRUp := fmt.Sprintf(COORDINATES_TEMPLATE, row-1, col+1)
+	diagRDown := fmt.Sprintf(COORDINATES_TEMPLATE, row+1, col+1)
+	diagLUp := fmt.Sprintf(COORDINATES_TEMPLATE, row-1, col-1)
+	diagLDown := fmt.Sprintf(COORDINATES_TEMPLATE, row+1, col-1)
+
+	var digits []string
+	var count int
+	groups := make(map[string]struct{})
+	updatedCoords := []string{up, down, left, right, diagRUp, diagRDown, diagLUp, diagLDown}
+	for _, coords := range updatedCoords {
+		num, ok := numbersRef[coords]
+		_, exists := groups[num.Value]
+		if ok && !exists {
+			digits = append(digits, num.Value)
+			groups[num.Value] = struct{}{}
+			count++
+		}
+	}
+
+	if len(digits) != 2 {
+		return []string{}
+	}
+
+	return digits
 }

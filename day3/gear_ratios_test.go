@@ -65,6 +65,29 @@ func TestDay3Part2(t *testing.T) {
 			},
 			want: 467835,
 		},
+
+		{
+			filename: "example_more_than_two",
+			reader: func(string) ([]string, error) {
+				return []string{
+					"467.114...",
+					"...*......",
+					"..35..633.",
+				}, nil
+			},
+			want: 0,
+		},
+		{
+			filename: "example_less_than_two",
+			reader: func(string) ([]string, error) {
+				return []string{
+					"46...114..",
+					"...*......",
+					"..35..633.",
+				}, nil
+			},
+			want: 0,
+		},
 	}
 	challenges := Day3{}
 	for _, tc := range testCases {
