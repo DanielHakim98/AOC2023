@@ -38,12 +38,6 @@ func GetInput(filename string) ([]string, error) {
 type Day3 struct{}
 
 const (
-	SHOW_PREV_NUMS       = "prevNums: "
-	SHOW_CURRENT_NUMS    = "currentNums: "
-	SHOW_NEXT_NUMS       = "nextNums: "
-	SHOW_PREV_SYMBOLS    = "prevSymbols: "
-	SHOW_CURRENT_SYMBOLS = "currentSymbols: "
-	SHOW_NEXT_SYMBOLS    = "nextSymbols: "
 	COORDINATES_TEMPLATE = "%v_%v"
 )
 
@@ -55,32 +49,25 @@ func (d *Day3) PartOne(filename string, reader func(string) ([]string, error)) i
 
 	symbolsRef := make(map[string][]int)
 	for i, line := range lines {
-		// fmt.Println(d.FindNumberInRow(line, i))
 		symbols := d.FindSymbol(line, i)
 		for k, v := range symbols {
 			symbolsRef[k] = v
 		}
 	}
-	// fmt.Println(symbolsRef)
 
-	var validNums []string
+	var sum int
 	for i, line := range lines {
 		numbers := d.FindNumberInRow(line, i)
 		for _, num := range numbers {
 		loopEveryDigit:
 			for _, digit := range num.List {
 				if isValid := d.CheckCoordinate(digit, symbolsRef); isValid {
-					validNums = append(validNums, num.Value)
+					v, _ := strconv.Atoi(num.Value)
+					sum += v
 					break loopEveryDigit
 				}
 			}
 		}
-	}
-
-	var sum int
-	for _, num := range validNums {
-		v, _ := strconv.Atoi(num)
-		sum += v
 	}
 
 	return sum
@@ -114,10 +101,6 @@ type BoardSize struct {
 	Col int
 }
 
-func (bd BoardSize) String() string {
-	return fmt.Sprintf("BoardSize(%v, %v)", bd.Row, bd.Col)
-}
-
 func (d *Day3) GetSize(lines *[]string) BoardSize {
 	row := len(*lines)
 	if row == 0 {
@@ -138,10 +121,6 @@ type NumGroup struct {
 }
 
 type Coordinates []int
-type NumSingle struct {
-	Value    string
-	Row, Col int
-}
 
 func (d *Day3) FindNumberInRow(line string, row int) []NumGroup {
 	re := regexp.MustCompile("[0-9]+")
@@ -163,11 +142,6 @@ func (d *Day3) FindNumberInRow(line string, row int) []NumGroup {
 		})
 	}
 	return numInRows
-}
-
-type Symbol struct {
-	Value       string
-	Coordinates []int
 }
 
 func (d *Day3) FindSymbol(line string, row int) map[string][]int {
