@@ -73,46 +73,16 @@ func (d *Day3) PartOne(filename string, reader func(string) ([]string, error)) i
 	return sum
 }
 
-func (d *Day3) CheckCoordinate(coord Coordinates, symbolsRef map[string][]int) bool {
-	row := coord[0]
-	col := coord[1]
+func (d *Day3) FindSymbol(line string, row int) map[string][]int {
+	re := regexp.MustCompile("[^.0-9]+")
+	matches := re.FindAllStringIndex(line, -1)
 
-	up := fmt.Sprintf(COORDINATES_TEMPLATE, row-1, col)
-	down := fmt.Sprintf(COORDINATES_TEMPLATE, row+1, col)
-	left := fmt.Sprintf(COORDINATES_TEMPLATE, row, col-1)
-	right := fmt.Sprintf(COORDINATES_TEMPLATE, row, col+1)
-	diagRUp := fmt.Sprintf(COORDINATES_TEMPLATE, row-1, col+1)
-	diagRDown := fmt.Sprintf(COORDINATES_TEMPLATE, row+1, col+1)
-	diagLUp := fmt.Sprintf(COORDINATES_TEMPLATE, row-1, col-1)
-	diagLDown := fmt.Sprintf(COORDINATES_TEMPLATE, row+1, col-1)
-
-	updatedCoords := []string{up, down, left, right, diagRUp, diagRDown, diagLUp, diagLDown}
-	for _, coords := range updatedCoords {
-		_, ok := symbolsRef[coords]
-		if ok {
-			return true
-		}
+	symbols := make(map[string][]int)
+	for _, match := range matches {
+		first := match[0]
+		symbols[fmt.Sprintf(COORDINATES_TEMPLATE, row, first)] = []int{row, first}
 	}
-	return false
-}
-
-type BoardSize struct {
-	Row int
-	Col int
-}
-
-func (d *Day3) GetSize(lines *[]string) BoardSize {
-	row := len(*lines)
-	if row == 0 {
-		return BoardSize{}
-	}
-
-	col := len((*lines)[0])
-
-	return BoardSize{
-		Row: row,
-		Col: col,
-	}
+	return symbols
 }
 
 type NumGroup struct {
@@ -144,14 +114,46 @@ func (d *Day3) FindNumberInRow(line string, row int) []NumGroup {
 	return numInRows
 }
 
-func (d *Day3) FindSymbol(line string, row int) map[string][]int {
-	re := regexp.MustCompile("[^.0-9]+")
-	matches := re.FindAllStringIndex(line, -1)
+func (d *Day3) CheckCoordinate(coord Coordinates, symbolsRef map[string][]int) bool {
+	row := coord[0]
+	col := coord[1]
 
-	symbols := make(map[string][]int)
-	for _, match := range matches {
-		first := match[0]
-		symbols[fmt.Sprintf(COORDINATES_TEMPLATE, row, first)] = []int{row, first}
+	up := fmt.Sprintf(COORDINATES_TEMPLATE, row-1, col)
+	down := fmt.Sprintf(COORDINATES_TEMPLATE, row+1, col)
+	left := fmt.Sprintf(COORDINATES_TEMPLATE, row, col-1)
+	right := fmt.Sprintf(COORDINATES_TEMPLATE, row, col+1)
+	diagRUp := fmt.Sprintf(COORDINATES_TEMPLATE, row-1, col+1)
+	diagRDown := fmt.Sprintf(COORDINATES_TEMPLATE, row+1, col+1)
+	diagLUp := fmt.Sprintf(COORDINATES_TEMPLATE, row-1, col-1)
+	diagLDown := fmt.Sprintf(COORDINATES_TEMPLATE, row+1, col-1)
+
+	updatedCoords := []string{up, down, left, right, diagRUp, diagRDown, diagLUp, diagLDown}
+	for _, coords := range updatedCoords {
+		_, ok := symbolsRef[coords]
+		if ok {
+			return true
+		}
 	}
-	return symbols
+	return false
 }
+
+/* Might be useful later (I don't know)
+type BoardSize struct {
+	Row int
+	Col int
+}
+
+func (d *Day3) GetSize(lines *[]string) BoardSize {
+	row := len(*lines)
+	if row == 0 {
+		return BoardSize{}
+	}
+
+	col := len((*lines)[0])
+
+	return BoardSize{
+		Row: row,
+		Col: col,
+	}
+}
+*/
