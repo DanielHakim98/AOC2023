@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"strconv"
 )
 
 func GetInput(filename string) ([]string, error) {
@@ -43,6 +44,7 @@ const (
 	SHOW_PREV_SYMBOLS    = "prevSymbols: "
 	SHOW_CURRENT_SYMBOLS = "currentSymbols: "
 	SHOW_NEXT_SYMBOLS    = "nextSymbols: "
+	COORDINATES_TEMPLATE = "%v_%v"
 )
 
 func (d *Day3) PartOne(filename string, reader func(string) ([]string, error)) int {
@@ -51,46 +53,60 @@ func (d *Day3) PartOne(filename string, reader func(string) ([]string, error)) i
 		log.Fatal(err)
 	}
 
-	lastIdx := len(lines) - 1
+	symbolsRef := make(map[string][]int)
 	for i, line := range lines {
-		currentNums := d.FindNumberInRow(line, i)
-		currentSymbols := d.FindSymbol(line, i)
-		if i == 0 {
-			fmt.Println(SHOW_CURRENT_NUMS, currentNums)
-			fmt.Println(SHOW_CURRENT_SYMBOLS, currentSymbols)
-
-			nextNums := d.FindNumberInRow(lines[i+1], i+1)
-			fmt.Println(SHOW_NEXT_NUMS, nextNums)
-			nextSymbols := d.FindSymbol(lines[i+1], i+1)
-			fmt.Println(SHOW_NEXT_SYMBOLS, nextSymbols)
-
-		} else if i == lastIdx {
-			prevNums := d.FindNumberInRow(lines[i-1], i-1)
-			fmt.Println(SHOW_PREV_NUMS, prevNums)
-			prevSymbols := d.FindSymbol(lines[i-1], i-1)
-			fmt.Println(SHOW_PREV_SYMBOLS, prevSymbols)
-
-			fmt.Println(SHOW_CURRENT_NUMS, currentNums)
-			fmt.Println(SHOW_CURRENT_SYMBOLS, currentSymbols)
-
-		} else {
-			prevNums := d.FindNumberInRow(lines[i-1], i-1)
-			fmt.Println(SHOW_PREV_NUMS, prevNums)
-			prevSymbols := d.FindSymbol(lines[i-1], i-1)
-			fmt.Println(SHOW_PREV_SYMBOLS, prevSymbols)
-
-			fmt.Println(SHOW_CURRENT_NUMS, currentNums)
-			fmt.Println(SHOW_CURRENT_SYMBOLS, currentSymbols)
-
-			nextNums := d.FindNumberInRow(lines[i+1], i+1)
-			fmt.Println(SHOW_NEXT_NUMS, nextNums)
-			nextSymbols := d.FindSymbol(lines[i+1], i+1)
-			fmt.Println(SHOW_NEXT_SYMBOLS, nextSymbols)
-
+		// fmt.Println(d.FindNumberInRow(line, i))
+		symbols := d.FindSymbol(line, i)
+		for k, v := range symbols {
+			symbolsRef[k] = v
 		}
-		fmt.Println()
 	}
-	return 0
+	// fmt.Println(symbolsRef)
+
+	var validNums []string
+	for i, line := range lines {
+		numbers := d.FindNumberInRow(line, i)
+		for _, num := range numbers {
+		loopEveryDigit:
+			for _, digit := range num.List {
+				if isValid := d.CheckCoordinate(digit, symbolsRef); isValid {
+					validNums = append(validNums, num.Value)
+					break loopEveryDigit
+				}
+			}
+		}
+	}
+
+	var sum int
+	for _, num := range validNums {
+		v, _ := strconv.Atoi(num)
+		sum += v
+	}
+
+	return sum
+}
+
+func (d *Day3) CheckCoordinate(coord Coordinates, symbolsRef map[string][]int) bool {
+	row := coord[0]
+	col := coord[1]
+
+	up := fmt.Sprintf(COORDINATES_TEMPLATE, row-1, col)
+	down := fmt.Sprintf(COORDINATES_TEMPLATE, row+1, col)
+	left := fmt.Sprintf(COORDINATES_TEMPLATE, row, col-1)
+	right := fmt.Sprintf(COORDINATES_TEMPLATE, row, col+1)
+	diagRUp := fmt.Sprintf(COORDINATES_TEMPLATE, row-1, col+1)
+	diagRDown := fmt.Sprintf(COORDINATES_TEMPLATE, row+1, col+1)
+	diagLUp := fmt.Sprintf(COORDINATES_TEMPLATE, row-1, col-1)
+	diagLDown := fmt.Sprintf(COORDINATES_TEMPLATE, row+1, col-1)
+
+	updatedCoords := []string{up, down, left, right, diagRUp, diagRDown, diagLUp, diagLDown}
+	for _, coords := range updatedCoords {
+		_, ok := symbolsRef[coords]
+		if ok {
+			return true
+		}
+	}
+	return false
 }
 
 type BoardSize struct {
@@ -118,17 +134,13 @@ func (d *Day3) GetSize(lines *[]string) BoardSize {
 
 type NumGroup struct {
 	Value string
-	List  map[NumSingle]Coordinates
+	List  map[string]Coordinates
 }
 
 type Coordinates []int
 type NumSingle struct {
 	Value    string
 	Row, Col int
-}
-
-func (nr NumSingle) String() string {
-	return fmt.Sprintf("{v: \"%v\"}", nr.Value)
 }
 
 func (d *Day3) FindNumberInRow(line string, row int) []NumGroup {
@@ -140,15 +152,10 @@ func (d *Day3) FindNumberInRow(line string, row int) []NumGroup {
 		i := match[0]
 		limit := match[1]
 		fullNum := line[i:limit]
-		nums := make(map[NumSingle]Coordinates)
+		nums := make(map[string]Coordinates)
 		for ; i < limit; i++ {
-			val := string(line[i])
-			num := NumSingle{
-				Value: val,
-				Row:   row,
-				Col:   i,
-			}
-			nums[num] = []int{num.Row, num.Col}
+			key := fmt.Sprintf("%v_%v", row, i)
+			nums[key] = []int{row, i}
 		}
 		numInRows = append(numInRows, NumGroup{
 			Value: fullNum,
@@ -163,18 +170,14 @@ type Symbol struct {
 	Coordinates []int
 }
 
-func (d *Day3) FindSymbol(line string, row int) []Symbol {
+func (d *Day3) FindSymbol(line string, row int) map[string][]int {
 	re := regexp.MustCompile("[^.0-9]+")
 	matches := re.FindAllStringIndex(line, -1)
-	var symbols []Symbol
+
+	symbols := make(map[string][]int)
 	for _, match := range matches {
 		first := match[0]
-		last := match[1]
-		symbol := line[first:last]
-		symbols = append(symbols, Symbol{
-			Value:       symbol,
-			Coordinates: []int{row, first},
-		})
+		symbols[fmt.Sprintf(COORDINATES_TEMPLATE, row, first)] = []int{row, first}
 	}
 	return symbols
 }
