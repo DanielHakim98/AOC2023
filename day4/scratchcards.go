@@ -171,9 +171,12 @@ func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
 			}
 		}
 
-		if count > 0 {
-			scratchCards[ScratchCard{d.GetCardNumber(card), count}] = struct{}{}
-		}
+		scratchCards[ScratchCard{d.GetCardNumber(card), count}] = struct{}{}
+
+	}
+
+	for k := range scratchCards {
+		fmt.Println(k)
 	}
 
 	return 0
