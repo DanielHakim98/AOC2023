@@ -1,6 +1,7 @@
 package day4
 
 import (
+	"fmt"
 	"log"
 	"strings"
 
@@ -86,6 +87,10 @@ func (d *Day4) PartOne(filename string, reader utils.AocReader) int {
 
 		}
 
+		fmt.Println(wins)
+		fmt.Println("count: ", count)
+		fmt.Println("sum: ", sum)
+		fmt.Println()
 		totalPoints += sum
 	}
 	return totalPoints
