@@ -50,4 +50,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// dayFourCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	dayFourCmd.Flags().IntVarP(&part, "part", "p", 0, "part to run")
 }
