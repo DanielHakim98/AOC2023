@@ -15,13 +15,14 @@ func (d *Day4) PartOne(filename string, reader utils.AocReader) int {
 		log.Fatal(err)
 	}
 
+	var totalPoints int
 	for _, line := range lines {
 		card := strings.Split(line, ":")
 		nums := strings.Split(card[1], "|")
-		left := nums[0]
 
 		// collect win numbers
-		var wins []string
+		left := nums[0]
+		wins := make(map[string]string)
 		num, isDigit := "", false
 		for _, char := range left {
 			if char >= '0' && char <= '9' {
@@ -31,13 +32,61 @@ func (d *Day4) PartOne(filename string, reader utils.AocReader) int {
 				num += string(char)
 			} else {
 				if isDigit {
-					wins = append(wins, num)
+					wins[num] = num
 				}
 				isDigit = false
 				num = ""
 			}
 		}
 
+		// check available numbers
+		right := nums[1]
+		var count, sum int
+		num, isDigit = "", false
+		for k, char := range right {
+			if char >= '0' && char <= '9' {
+
+				// if number then set to number
+				if !isDigit {
+					isDigit = true
+				}
+				// collect number
+				num += string(char)
+
+				// check if number locates at last index
+				if k == len(right)-1 {
+					_, ok := wins[num]
+					if ok {
+						if count == 0 {
+							sum += 1
+						} else {
+							sum = sum * 2
+						}
+						count++
+					}
+				}
+			} else {
+				// If current 'char' is not not a number
+				// then check isDigit is true (if true then previous is number)
+				if isDigit {
+					_, ok := wins[num]
+					if ok {
+						if count == 0 {
+							sum += 1
+						} else {
+							sum = sum * 2
+						}
+						count++
+					}
+				}
+				// reset isDigit and num
+				isDigit = false
+				num = ""
+			}
+
+		}
+
+		totalPoints += sum
 	}
-	return 0
+	return totalPoints
 }
