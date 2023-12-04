@@ -137,7 +137,7 @@ func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
 				}
 				// collect number
 				num += string(char)
-				// check if number locates at last index
+				// check if a number locates at last index
 				if k == len(right)-1 {
 					_, ok := wins[num]
 					if ok {
