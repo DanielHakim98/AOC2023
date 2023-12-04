@@ -95,3 +95,70 @@ func (d *Day4) PartOne(filename string, reader utils.AocReader) int {
 	}
 	return totalPoints
 }
+
+func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
+	lines, err := reader(4, filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, line := range lines {
+		card := strings.Split(line, ":")
+		nums := strings.Split(card[1], "|")
+		// collect total wins
+		left := nums[0]
+		wins := make(map[string]string)
+		num, isDigit := "", false
+		for _, char := range left {
+			if char >= '0' && char <= '9' {
+				if !isDigit {
+					isDigit = true
+				}
+				num += string(char)
+				// we dont' consider last index here because
+				// it's always empty spaces
+			} else {
+				if isDigit {
+					wins[num] = num
+				}
+				isDigit = false
+				num = ""
+			}
+		}
+
+		right := nums[1]
+		var count int
+		num, isDigit = "", false
+		for k, char := range right {
+			if char >= '0' && char <= '9' {
+				// if number then set to number
+				if !isDigit {
+					isDigit = true
+				}
+				// collect number
+				num += string(char)
+				// check if number locates at last index
+				if k == len(right)-1 {
+					_, ok := wins[num]
+					if ok {
+						count++
+					}
+				}
+			} else {
+				// If current 'char' is not not a number
+				// then check isDigit is true (if true then previous is number)
+				if isDigit {
+					_, ok := wins[num]
+					if ok {
+						count++
+					}
+				}
+				// reset isDigit and num
+				isDigit = false
+				num = ""
+			}
+		}
+		fmt.Println(count)
+	}
+	return 0
+}

@@ -31,7 +31,7 @@ to quickly create a Cobra application.`,
 		case 1:
 			fmt.Println("sum of scratch points: ", d.PartOne(args[0], utils.GetInput))
 		case 2:
-			fmt.Println("sum of scratch points:")
+			fmt.Println("sum of scratchcards:", d.PartTwo(args[0], utils.GetInput))
 		default:
 			log.Fatal("Invalid 'part' flag")
 		}
