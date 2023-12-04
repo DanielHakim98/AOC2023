@@ -1,1 +1,3 @@
 **/day*/*.txt
+**/day*/*example*.go
+**/cmd/*example*.go
