@@ -3,6 +3,7 @@ package day4
 import (
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 
 	"github.com/DanielHakim98/aoc/utils"
@@ -96,6 +97,11 @@ func (d *Day4) PartOne(filename string, reader utils.AocReader) int {
 	return totalPoints
 }
 
+type ScratchCard struct {
+	Id    int
+	Child int
+}
+
 func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
 	lines, err := reader(4, filename)
 	if err != nil {
@@ -158,7 +164,20 @@ func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
 				num = ""
 			}
 		}
-		fmt.Println(count)
+
+		// fmt.Println("id: ", d.GetCardNumber(card))
+		// fmt.Println("count: ", count)
+
+		fmt.Println("scratchCard:", ScratchCard{
+			Id:    d.GetCardNumber(card),
+			Child: count,
+		})
+		fmt.Println()
 	}
 	return 0
+}
+
+func (d *Day4) GetCardNumber(card []string) (id int) {
+	id, _ = strconv.Atoi(strings.TrimSpace(strings.Split(card[0], " ")[1]))
+	return
 }
