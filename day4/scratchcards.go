@@ -98,8 +98,8 @@ func (d *Day4) PartOne(filename string, reader utils.AocReader) int {
 }
 
 type ScratchCard struct {
-	Id    int
-	Child int
+	Id      int
+	Matches int
 }
 
 func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
@@ -108,6 +108,7 @@ func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
 		log.Fatal(err)
 	}
 
+	scratchCards := make(map[ScratchCard][]ScratchCard)
 	for _, line := range lines {
 		card := strings.Split(line, ":")
 		nums := strings.Split(card[1], "|")
@@ -168,11 +169,19 @@ func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
 		// fmt.Println("id: ", d.GetCardNumber(card))
 		// fmt.Println("count: ", count)
 
-		fmt.Println("scratchCard:", ScratchCard{
-			Id:    d.GetCardNumber(card),
-			Child: count,
-		})
-		fmt.Println()
+		var childs []ScratchCard
+		id := d.GetCardNumber(card)
+		limit := id + count
+		start := id + 1
+		for ; start <= limit; start++ {
+			card := ScratchCard{start, 0}
+			childs = append(childs, card)
+		}
+		scratchCards[ScratchCard{id, count}] = childs
+	}
+
+	for k, c := range scratchCards {
+		fmt.Println(k, c)
 	}
 	return 0
 }
