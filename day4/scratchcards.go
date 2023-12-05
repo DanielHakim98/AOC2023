@@ -102,11 +102,6 @@ type ScratchCard struct {
 	Matches int
 }
 
-type Pair struct {
-	Current ScratchCard
-	Next    *[]Pair
-}
-
 type CardId int
 
 var total int
@@ -117,8 +112,8 @@ func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
 		log.Fatal(err)
 	}
 
-	// scratchCards := make(map[CardId]ScratchCard)
-	var scratchCards []ScratchCard
+	scratchCards := make(map[CardId]ScratchCard)
+	// var scratchCards []ScratchCard
 	for i, line := range lines {
 		card := strings.Split(line, ":")
 		nums := strings.Split(card[1], "|")
@@ -176,37 +171,42 @@ func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
 			}
 		}
 
-		// id := d.GetCardNumber(card)
-		// scratchCards[CardId(id)] = ScratchCard{id, count}
-		scratchCards = append(scratchCards, ScratchCard{i + 1, count})
+		// fmt.Println("id: ", d.GetCardNumber(card))
+		fmt.Println(i)
+		id := d.GetCardNumber(card)
+		scratchCards[CardId(id)] = ScratchCard{id, count}
+		// scratchCards = append(scratchCards, ScratchCard{i + 1, count})
 
 	}
-
+	fmt.Println()
 	// instances := make([]int, len(scratchCards))
 
 	for _, card := range scratchCards {
-		fmt.Println("card: ", card)
 		limit := card.Matches + card.Id
 		cursor := card.Id + 1
-		fmt.Println("limit: ", limit)
-		fmt.Println("cursor: ", cursor)
+		// fmt.Println("card: ", card)
+		// fmt.Println("limit: ", limit)
+		// fmt.Println("cursor: ", cursor)
 
 		for ; cursor <= limit; cursor++ {
-			fmt.Println("child card: ", scratchCards[cursor])
+			if cursor >= len(scratchCards) {
+				continue
+			}
+			// fmt.Println("child card: ", scratchCards[cursor])
 		}
+		// fmt.Println()
+	}
+	for _, c := range scratchCards {
+		fmt.Println("Card #", c.Id)
+		d.CountCards(c, scratchCards)
 		fmt.Println()
 	}
-	// for _, c := range scratchCards {
-	// 	fmt.Println("Card #", c.Id)
-	// 	d.CountCards(c, scratchCards)
-	// 	fmt.Println()
-	// }
 
 	return total
 }
 
 func (d *Day4) GetCardNumber(card []string) (id int) {
-	id, _ = strconv.Atoi(strings.TrimSpace(strings.Split(card[0], " ")[1]))
+	id, _ = strconv.Atoi(strings.TrimSpace(strings.Fields(card[0])[1]))
 	return
 }
 
