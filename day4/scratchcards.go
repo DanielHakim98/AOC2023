@@ -117,8 +117,9 @@ func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
 		log.Fatal(err)
 	}
 
-	scratchCards := make(map[CardId]ScratchCard)
-	for _, line := range lines {
+	// scratchCards := make(map[CardId]ScratchCard)
+	var scratchCards []ScratchCard
+	for i, line := range lines {
 		card := strings.Split(line, ":")
 		nums := strings.Split(card[1], "|")
 		// collect total wins
@@ -175,16 +176,31 @@ func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
 			}
 		}
 
-		id := d.GetCardNumber(card)
-		scratchCards[CardId(id)] = ScratchCard{id, count}
+		// id := d.GetCardNumber(card)
+		// scratchCards[CardId(id)] = ScratchCard{id, count}
+		scratchCards = append(scratchCards, ScratchCard{i + 1, count})
 
 	}
 
-	for _, c := range scratchCards {
-		fmt.Println("Card #", c.Id)
-		d.CountCards(c, scratchCards)
+	// instances := make([]int, len(scratchCards))
+
+	for _, card := range scratchCards {
+		fmt.Println("card: ", card)
+		limit := card.Matches + card.Id
+		cursor := card.Id + 1
+		fmt.Println("limit: ", limit)
+		fmt.Println("cursor: ", cursor)
+
+		for ; cursor <= limit; cursor++ {
+			fmt.Println("child card: ", scratchCards[cursor])
+		}
 		fmt.Println()
 	}
+	// for _, c := range scratchCards {
+	// 	fmt.Println("Card #", c.Id)
+	// 	d.CountCards(c, scratchCards)
+	// 	fmt.Println()
+	// }
 
 	return total
 }
