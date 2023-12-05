@@ -107,13 +107,17 @@ type Pair struct {
 	Next    *[]Pair
 }
 
+type CardId int
+
+var count int
+
 func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
 	lines, err := reader(4, filename)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	scratchCards := make(map[ScratchCard]struct{})
+	scratchCards := make(map[CardId]ScratchCard)
 	for _, line := range lines {
 		card := strings.Split(line, ":")
 		nums := strings.Split(card[1], "|")
@@ -171,15 +175,17 @@ func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
 			}
 		}
 
-		scratchCards[ScratchCard{d.GetCardNumber(card), count}] = struct{}{}
+		id := d.GetCardNumber(card)
+		scratchCards[CardId(id)] = ScratchCard{id, count}
 
 	}
 
-	for k := range scratchCards {
-		fmt.Println(k)
+	for _, c := range scratchCards {
+		d.CountCards(c, scratchCards)
+
 	}
 
-	return 0
+	return count
 }
 
 func (d *Day4) GetCardNumber(card []string) (id int) {
@@ -187,31 +193,24 @@ func (d *Day4) GetCardNumber(card []string) (id int) {
 	return
 }
 
-func (d *Day4) DisplayPairs(pair Pair) {
-	if pair.Next == nil {
+func (d *Day4) CountCards(c ScratchCard, ref map[CardId]ScratchCard) {
+	fmt.Println(c)
+	if c.Matches == 0 {
 		return
 	}
 
-	fmt.Println(pair.Current)
+	limit := c.Id + c.Matches
+	cur := c.Id + 1
 
-	for _, v := range *pair.Next {
-		d.DisplayPairs(v)
+	for ; cur <= limit; cur++ {
+		curCard, ok := ref[CardId(cur)]
+		fmt.Println(curCard)
+		if ok {
+			if c.Matches > 0 {
+				d.CountCards(curCard, ref)
+			}
+
+		}
 	}
+
 }
-
-/*
-	pair := [ScratchCard, *[]ScratchCard]
-	scratchCards := make(map[ScratchCard][]ScratchCard)
-	var childs []ScratchCard
-	id := d.GetCardNumber(card)
-	limit := id + count
-	start := id + 1
-	for ; start <= limit; start++ {
-		card := ScratchCard{start, 0}
-		childs = append(childs, card)
-	}
-	scratchCards[ScratchCard{id, count}] = childs
-	for k, c := range scratchCards {
-		fmt.Println(k, c)
-	}
-*/
