@@ -175,9 +175,10 @@ func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
 	var total int
 	// Recursive Way
 	for _, c := range scratchCards {
-		// fmt.Println("Card #", c.Id)
+		// For every card, there must be a least:
+		// 1 card + copies of cards won
 		total += d.CountCards(c, scratchCards, 0)
-		// fmt.Println()
+
 	}
 
 	return total
@@ -186,12 +187,15 @@ func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
 func (d *Day4) GetCardNumber(card []string) (id int) {
 	// Previously, use strings.Split(card[0]," ")
 	// but turns out spaces can vary between " " or "  " or "   "
-	// so that's why we user strings.Field here
+	// so that's why we use strings.Field here to split by spaces
+	// regardless of the space length
 	id, _ = strconv.Atoi(strings.TrimSpace(strings.Fields(card[0])[1]))
 	return
 }
 
 func (d *Day4) CountCards(c ScratchCard, ref map[CardId]ScratchCard, total int) int {
+	// Everytime a card is passed into this method
+	// then it's one card
 	total++
 	if c.Matches == 0 {
 		return total
@@ -203,9 +207,12 @@ func (d *Day4) CountCards(c ScratchCard, ref map[CardId]ScratchCard, total int) 
 	for ; cur <= limit; cur++ {
 		curCard, ok := ref[CardId(cur)]
 		if ok {
+			// For every copies of card won by a card,
+			// pass those card into this method recursively
 			total += d.CountCards(curCard, ref, 0)
 		}
 	}
+
 	return total
 }
 
