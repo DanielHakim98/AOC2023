@@ -104,8 +104,6 @@ type ScratchCard struct {
 
 type CardId int
 
-var total int
-
 func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
 	lines, err := reader(4, filename)
 	if err != nil {
@@ -113,8 +111,7 @@ func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
 	}
 
 	scratchCards := make(map[CardId]ScratchCard)
-	// var scratchCards []ScratchCard
-	for i, line := range lines {
+	for _, line := range lines {
 		card := strings.Split(line, ":")
 		nums := strings.Split(card[1], "|")
 		// collect total wins
@@ -171,50 +168,33 @@ func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
 			}
 		}
 
-		// fmt.Println("id: ", d.GetCardNumber(card))
-		fmt.Println(i)
 		id := d.GetCardNumber(card)
 		scratchCards[CardId(id)] = ScratchCard{id, count}
-		// scratchCards = append(scratchCards, ScratchCard{i + 1, count})
-
 	}
-	fmt.Println()
-	// instances := make([]int, len(scratchCards))
 
-	for _, card := range scratchCards {
-		limit := card.Matches + card.Id
-		cursor := card.Id + 1
-		// fmt.Println("card: ", card)
-		// fmt.Println("limit: ", limit)
-		// fmt.Println("cursor: ", cursor)
-
-		for ; cursor <= limit; cursor++ {
-			if cursor >= len(scratchCards) {
-				continue
-			}
-			// fmt.Println("child card: ", scratchCards[cursor])
-		}
-		// fmt.Println()
-	}
+	var total int
+	// Recursive Way
 	for _, c := range scratchCards {
-		fmt.Println("Card #", c.Id)
-		d.CountCards(c, scratchCards)
-		fmt.Println()
+		// fmt.Println("Card #", c.Id)
+		total += d.CountCards(c, scratchCards, 0)
+		// fmt.Println()
 	}
 
 	return total
 }
 
 func (d *Day4) GetCardNumber(card []string) (id int) {
+	// Previously, use strings.Split(card[0]," ")
+	// but turns out spaces can vary between " " or "  " or "   "
+	// so that's why we user strings.Field here
 	id, _ = strconv.Atoi(strings.TrimSpace(strings.Fields(card[0])[1]))
 	return
 }
 
-func (d *Day4) CountCards(c ScratchCard, ref map[CardId]ScratchCard) {
-	fmt.Println(c)
+func (d *Day4) CountCards(c ScratchCard, ref map[CardId]ScratchCard, total int) int {
 	total++
 	if c.Matches == 0 {
-		return
+		return total
 	}
 
 	limit := c.Id + c.Matches
@@ -222,13 +202,38 @@ func (d *Day4) CountCards(c ScratchCard, ref map[CardId]ScratchCard) {
 
 	for ; cur <= limit; cur++ {
 		curCard, ok := ref[CardId(cur)]
-		// fmt.Println(curCard)
 		if ok {
-			// if c.Matches > 0 {
-			d.CountCards(curCard, ref)
-			// }
-
+			total += d.CountCards(curCard, ref, 0)
 		}
 	}
-
+	return total
 }
+
+/*
+	var cards []ScratchCard
+	instances := make([]int, len(cards))
+	for idx, card := range cards {
+		instances[idx] += 1
+
+		cursor := card.Id + 1
+		limit := card.Matches + card.Id
+		fmt.Println("card: ", card)
+		fmt.Println("start: ", cursor)
+		fmt.Println("limit: ", limit)
+
+		for ; cursor <= limit; cursor++ {
+			// if cursor >= len(cards) {
+			// 	continue
+			// }
+			cursorIdx := cursor - 1
+			fmt.Println("child card: ", cards[cursorIdx])
+
+			instances[cursorIdx] += 1
+			fmt.Println(instances)
+
+		}
+		fmt.Println()
+	}
+
+	fmt.Println(instances)
+*/
