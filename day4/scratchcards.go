@@ -109,7 +109,7 @@ type Pair struct {
 
 type CardId int
 
-var count int
+var total int
 
 func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
 	lines, err := reader(4, filename)
@@ -181,11 +181,12 @@ func (d *Day4) PartTwo(filename string, reader utils.AocReader) int {
 	}
 
 	for _, c := range scratchCards {
+		fmt.Println("Card #", c.Id)
 		d.CountCards(c, scratchCards)
-
+		fmt.Println()
 	}
 
-	return count
+	return total
 }
 
 func (d *Day4) GetCardNumber(card []string) (id int) {
@@ -195,6 +196,7 @@ func (d *Day4) GetCardNumber(card []string) (id int) {
 
 func (d *Day4) CountCards(c ScratchCard, ref map[CardId]ScratchCard) {
 	fmt.Println(c)
+	total++
 	if c.Matches == 0 {
 		return
 	}
@@ -204,11 +206,11 @@ func (d *Day4) CountCards(c ScratchCard, ref map[CardId]ScratchCard) {
 
 	for ; cur <= limit; cur++ {
 		curCard, ok := ref[CardId(cur)]
-		fmt.Println(curCard)
+		// fmt.Println(curCard)
 		if ok {
-			if c.Matches > 0 {
-				d.CountCards(curCard, ref)
-			}
+			// if c.Matches > 0 {
+			d.CountCards(curCard, ref)
+			// }
 
 		}
 	}
