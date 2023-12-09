@@ -70,3 +70,12 @@ func (d *Day5) PartOne(filename string, reader utils.AocReader) int {
 	fmt.Println(results)
 	return slices.Min(results)
 }
+
+func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
+	lines, err := reader(d.Dnum, filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return len(lines)
+}

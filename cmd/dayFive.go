@@ -31,7 +31,7 @@ to quickly create a Cobra application.`,
 		case 1:
 			fmt.Println("Lowest location number: ", d.PartOne(args[0], utils.GetInput))
 		case 2:
-			fmt.Println("part 2 is called")
+			fmt.Println("Lowest location number: ", d.PartTwo(args[0], utils.GetInput))
 		default:
 			log.Fatal("Invalid 'part' flag")
 		}
