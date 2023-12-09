@@ -76,46 +76,84 @@ func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	type Interval struct {
+		Start int
+		End   int
+	}
+	seedStr := strings.Fields(strings.Split(lines[0], ":")[1])
+	seedInterval := []Interval{}
+	for i := 0; i < len(seedStr); i += 2 {
+		start, _ := strconv.Atoi(seedStr[i])
+		ranges, _ := strconv.Atoi(seedStr[i+1])
+		end := start + ranges - 1
+		seedInterval = append(seedInterval, Interval{start, end})
+	}
+
+	for _, line := range lines[1:] {
+		if len(line) == 0 {
+			continue
+		}
+		if line[0] < '0' || line[0] > '9' {
+			continue
+		}
+		srcDesMapper := strings.Fields(line)
+		ranges, _ := strconv.Atoi(srcDesMapper[2])
+		srcMin, _ := strconv.Atoi(srcDesMapper[1])
+		srcMax := srcMin + ranges - 1
+		// desMin, _ := strconv.Atoi(srcDesMapper[0])
+		// diff := desMin - srcMin
+
+		srcInterval := Interval{srcMin, srcMax}
+
+		for _, current := range seedInterval {
+			overlap := (current.Start <= srcInterval.End) && (srcInterval.Start <= current.End)
+			if overlap {
+				fmt.Println("overlapp")
+				fmt.Printf("current: %v, src: %v\n", current, srcInterval)
+
+				minInterval := min(current.Start, srcInterval.Start)
+				maxInterval := max(current.End, srcInterval.End)
+				fmt.Println(minInterval, maxInterval)
+				fmt.Println()
+			}
+		}
+
+	}
+	return 0
+}
+
+/*func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
+	lines, err := reader(d.Dnum, filename)
+	if err != nil {
+		log.Fatal(err)
+	}
 	seeds := func() []int {
 		seedStr := strings.Fields(strings.Split(lines[0], ":")[1])
 		var seeds []int
-		// existing := make(map[int]struct{})
 		for i := 0; i < len(seedStr); i += 2 {
-			current, _ := strconv.Atoi(seedStr[i])
-			total, _ := strconv.Atoi(seedStr[i+1])
-			for j := 1; j <= total; j++ {
-				// fmt.Println("start:", current)
-				// if _, ok := existing[current]; ok {
-				// 	continue
-				// }
-				// existing[current] = struct{}{}
-				seeds = append(seeds, current)
-				current += 1
-			}
+			start, _ := strconv.Atoi(seedStr[i])
+			ranges, _ := strconv.Atoi(seedStr[i+1])
+			end := start + ranges - 1
+
+			fmt.Printf("(%v,%v)\n", start, end)
 
 		}
 		return seeds
 	}()
 
+	return 0
 	results := make([]int, len(seeds))
 	copy(results, seeds)
-	// type STM struct {
-	// 	Src int
-	// 	Des int
-	// }
 	type Index int
 	done := make(map[Index]struct{})
 	fmt.Println("before: ", results)
-	// fmt.Println("results[3](before):", results[3])
 	for _, line := range lines[1:] {
-
 		if len(line) == 0 {
 			clear(done)
-			// fmt.Println()
 			continue
 		}
 		if line[0] < '0' || line[0] > '9' {
-			// fmt.Println(line)
 			continue
 		}
 
@@ -138,10 +176,8 @@ func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
 				results[i] = target
 			}
 		}
-		// fmt.Println(results[3])
 	}
-
-	// fmt.Println(results[3])
 	fmt.Println("after: ", results)
 	return slices.Min(results)
 }
+*/
