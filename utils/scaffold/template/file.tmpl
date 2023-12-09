@@ -1,0 +1,44 @@
+package day{{.Day}}
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/DanielHakim98/aoc/utils"
+)
+
+type Day{{.Day}} struct{}
+
+func (d *Day{{.Day}}) PartOne(filename string, reader utils.AocReader) int {
+	lines, err := reader({{.Day}}, filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Your logic goes here
+
+	// You can remove this. Just to keep the linter quite
+	// for not using 'lines' variable
+	for _, line := range lines {
+		fmt.Println(string(line))
+	}
+
+	return 0
+}
+
+func (d *Day{{.Day}}) PartTwo(filename string, reader utils.AocReader) int {
+	lines, err := reader({{.Day}}, filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Your logic goes here
+
+	// You can remove this. Just to keep the linter quite
+	// for not using 'lines' variable
+	for _, line := range lines {
+		fmt.Println(string(line))
+	}
+
+	return 0
+}

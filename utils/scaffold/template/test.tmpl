@@ -1,0 +1,60 @@
+package day{{.Day}}
+
+import (
+	"fmt"
+	"testing"
+)
+
+type Test struct {
+	filename string
+	reader   func(int, string) ([]string, error)
+	want     int
+}
+
+func TestDay{{.Day}}Part1(t *testing.T) {
+	testCases := []Test{
+		{
+			filename: "example_part1",
+			reader: func(int, string) ([]string, error) {
+				return []string{
+                    "Fake your input here",
+				}, nil
+			},
+			want: 0, // Insert expected result result
+		},
+	}
+
+	challenges := Day{{.Day}}{}
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("testing '%v'", tc.filename), func(t *testing.T) {
+			got := challenges.PartOne(tc.filename, tc.reader)
+			if got != tc.want {
+				t.Errorf("got %v, want %v", got, tc.want)
+			}
+		})
+	}
+}
+
+func TestDay{{.Day}}Part2(t *testing.T) {
+	testCases := []Test{
+		{
+			filename: "example_part1",
+			reader: func(int, string) ([]string, error) {
+				return []string{
+                    "Fake your input here",
+				}, nil
+			},
+			want: 0, // Insert expected result result
+		},
+	}
+
+	challenges := Day{{.Day}}{}
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("testing '%v'", tc.filename), func(t *testing.T) {
+			got := challenges.PartTwo(tc.filename, tc.reader)
+			if got != tc.want {
+				t.Errorf("got %v, want %v", got, tc.want)
+			}
+		})
+	}
+}
