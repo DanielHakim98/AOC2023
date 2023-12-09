@@ -79,11 +79,16 @@ func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
 	seeds := func() []int {
 		seedStr := strings.Fields(strings.Split(lines[0], ":")[1])
 		var seeds []int
+		// existing := make(map[int]struct{})
 		for i := 0; i < len(seedStr); i += 2 {
 			current, _ := strconv.Atoi(seedStr[i])
 			total, _ := strconv.Atoi(seedStr[i+1])
 			for j := 1; j <= total; j++ {
 				// fmt.Println("start:", current)
+				// if _, ok := existing[current]; ok {
+				// 	continue
+				// }
+				// existing[current] = struct{}{}
 				seeds = append(seeds, current)
 				current += 1
 			}
@@ -94,24 +99,23 @@ func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
 
 	results := make([]int, len(seeds))
 	copy(results, seeds)
-	type STM struct {
-		Src   int
-		Des   int
-		Title string
-	}
-	done := make(map[STM]struct{})
-	fmt.Println("results[3](before):", results[3])
+	// type STM struct {
+	// 	Src int
+	// 	Des int
+	// }
+	type Index int
+	done := make(map[Index]struct{})
+	fmt.Println("before: ", results)
+	// fmt.Println("results[3](before):", results[3])
 	for _, line := range lines[1:] {
-		var title string
+
 		if len(line) == 0 {
 			clear(done)
-			title = ""
-			fmt.Println()
+			// fmt.Println()
 			continue
 		}
 		if line[0] < '0' || line[0] > '9' {
-			fmt.Println(line)
-			title = line
+			// fmt.Println(line)
 			continue
 		}
 
@@ -122,20 +126,22 @@ func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
 		desMin, _ := strconv.Atoi(srcDesMapper[0])
 		diff := desMin - srcMin
 
-		fmt.Printf("src:[%v, %v] -> target[%v, %v]; diff: %v\n", srcMin, srcMax, desMin, desMin+ranges-1, diff)
+		// fmt.Printf("src:[%v, %v] -> target[%v, %sv]; diff: %v\n", srcMin, srcMax, desMin, desMin+ranges-1, diff)
 		for i, src := range results {
 			if src < srcMin || src > srcMax {
 				continue
 			}
-			target := src + diff
-			if _, ok := done[STM{Src: src, Des: target, Title: title}]; !ok {
-				done[STM{Src: src, Des: target, Title: title}] = struct{}{}
+
+			if _, ok := done[Index(i)]; !ok {
+				target := src + diff
+				done[Index(i)] = struct{}{}
 				results[i] = target
 			}
 		}
-		fmt.Println(results[3])
+		// fmt.Println(results[3])
 	}
 
-	fmt.Println(results[3])
+	// fmt.Println(results[3])
+	fmt.Println("after: ", results)
 	return slices.Min(results)
 }
