@@ -91,27 +91,22 @@ func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
 	}
 
 	for _, line := range lines[1:] {
-		if len(line) == 0 {
+		if len(line) == 0 || line[0] < '0' || line[0] > '9' {
 			continue
 		}
-		if line[0] < '0' || line[0] > '9' {
-			continue
-		}
+
 		srcDesMapper := strings.Fields(line)
 		ranges, _ := strconv.Atoi(srcDesMapper[2])
 		srcMin, _ := strconv.Atoi(srcDesMapper[1])
 		srcMax := srcMin + ranges - 1
 		// desMin, _ := strconv.Atoi(srcDesMapper[0])
 		// diff := desMin - srcMin
-
 		srcInterval := Interval{srcMin, srcMax}
-
+		expandedIntervals := make([][3]Interval, 0)
 		for _, current := range seedInterval {
 			overlap := (current.Start <= srcInterval.End) && (srcInterval.Start <= current.End)
 			if overlap {
 				fmt.Println("overlapp")
-				// fmt.Printf("current: %v, src: %v\n", current, srcInterval)
-
 				intervalNums := []int{
 					current.Start,
 					current.End,
@@ -119,35 +114,41 @@ func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
 					srcInterval.End,
 				}
 				slices.Sort(intervalNums)
-				// fmt.Printf("{%v, %v} - {%v, %v}\n",
-				// 	intervalNums[0],
-				// 	intervalNums[1],
-				// 	intervalNums[2],
-				// 	intervalNums[3])
 
 				// if perfect overlapping
 				if intervalNums[0] == intervalNums[1] && intervalNums[2] == intervalNums[3] {
-					fmt.Printf("{%v, %v} - {%v,%v} - {%v, %v}\n",
-						intervalNums[0],
-						intervalNums[1],
-						intervalNums[1],
-						intervalNums[2],
-						intervalNums[2],
-						intervalNums[3])
+					// fmt.Printf("{%v, %v} - {%v,%v} - {%v, %v}\n",
+					// 	intervalNums[1],
+					// 	intervalNums[2],
+					// 	intervalNums[1],
+					// 	intervalNums[2],
+					// 	intervalNums[1],
+					// 	intervalNums[2])
+					newIntervals := [3]Interval{
+						{intervalNums[1], intervalNums[2]},
+						{intervalNums[1], intervalNums[2]},
+						{intervalNums[1], intervalNums[2]},
+					}
+					expandedIntervals = append(expandedIntervals, newIntervals)
 				} else {
-					fmt.Printf("{%v, %v} - {%v,%v} - {%v, %v}\n",
-						intervalNums[0],
-						intervalNums[1]-1,
-						intervalNums[1],
-						intervalNums[2],
-						intervalNums[2]+1,
-						intervalNums[3])
+					// fmt.Printf("{%v, %v} - {%v,%v} - {%v, %v}\n",
+					// 	intervalNums[0],
+					// 	intervalNums[1]-1,
+					// 	intervalNums[1],
+					// 	intervalNums[2],
+					// 	intervalNums[2]+1,
+					// 	intervalNums[3])
+					newIntervals := [3]Interval{
+						{intervalNums[0], intervalNums[1] - 1},
+						{intervalNums[1], intervalNums[2]},
+						{intervalNums[2] + 1, intervalNums[3]},
+					}
+					expandedIntervals = append(expandedIntervals, newIntervals)
 				}
-
-				fmt.Println()
 			}
 		}
-
+		fmt.Println(expandedIntervals)
+		fmt.Println()
 	}
 	return 0
 }
