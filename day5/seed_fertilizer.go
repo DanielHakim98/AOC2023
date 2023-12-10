@@ -110,11 +110,40 @@ func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
 			overlap := (current.Start <= srcInterval.End) && (srcInterval.Start <= current.End)
 			if overlap {
 				fmt.Println("overlapp")
-				fmt.Printf("current: %v, src: %v\n", current, srcInterval)
+				// fmt.Printf("current: %v, src: %v\n", current, srcInterval)
 
-				minInterval := min(current.Start, srcInterval.Start)
-				maxInterval := max(current.End, srcInterval.End)
-				fmt.Println(minInterval, maxInterval)
+				intervalNums := []int{
+					current.Start,
+					current.End,
+					srcInterval.Start,
+					srcInterval.End,
+				}
+				slices.Sort(intervalNums)
+				// fmt.Printf("{%v, %v} - {%v, %v}\n",
+				// 	intervalNums[0],
+				// 	intervalNums[1],
+				// 	intervalNums[2],
+				// 	intervalNums[3])
+
+				// if perfect overlapping
+				if intervalNums[0] == intervalNums[1] && intervalNums[2] == intervalNums[3] {
+					fmt.Printf("{%v, %v} - {%v,%v} - {%v, %v}\n",
+						intervalNums[0],
+						intervalNums[1],
+						intervalNums[1],
+						intervalNums[2],
+						intervalNums[2],
+						intervalNums[3])
+				} else {
+					fmt.Printf("{%v, %v} - {%v,%v} - {%v, %v}\n",
+						intervalNums[0],
+						intervalNums[1]-1,
+						intervalNums[1],
+						intervalNums[2],
+						intervalNums[2]+1,
+						intervalNums[3])
+				}
+
 				fmt.Println()
 			}
 		}
