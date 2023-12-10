@@ -100,16 +100,15 @@ func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
 		ranges, _ := strconv.Atoi(srcDesMapper[2])
 		srcMin, _ := strconv.Atoi(srcDesMapper[1])
 		srcMax := srcMin + ranges - 1
-		// desMin, _ := strconv.Atoi(srcDesMapper[0])
-		// diff := desMin - srcMin
+		desMin, _ := strconv.Atoi(srcDesMapper[0])
+		diff := desMin - srcMin
 		srcInterval := Interval{srcMin, srcMax}
-		d.IntervalCalculation(&seedInterval, srcInterval)
-		fmt.Println()
+		d.IntervalCalculation(&seedInterval, srcInterval, diff)
 	}
 	return 0
 }
 
-func (d *Day5) IntervalCalculation(seeds *[]Interval, src Interval) {
+func (d *Day5) IntervalCalculation(seeds *[]Interval, src Interval, diff int) {
 	expandedIntervals := make([][]Interval, 0)
 	for _, cur := range *seeds {
 		overlap := (cur.Start <= src.End) && (src.Start <= cur.End)
@@ -141,11 +140,13 @@ func (d *Day5) IntervalCalculation(seeds *[]Interval, src Interval) {
 				}
 				splitted = append(splitted, temp...)
 			}
+			fmt.Printf("interval (%v, %v)\n", splitted[1].Start, splitted[1].End)
+			fmt.Printf("shifted (%v, %v)\n\n", splitted[1].Start+diff, splitted[1].End+diff)
+
 			expandedIntervals = append(expandedIntervals, splitted)
 		}
 	}
-	fmt.Println(expandedIntervals)
-	fmt.Println()
+	// fmt.Println(expandedIntervals)
 }
 
 /*func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
