@@ -103,50 +103,53 @@ func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
 		desMin, _ := strconv.Atoi(srcDesMapper[0])
 		diff := desMin - srcMin
 		srcInterval := Interval{srcMin, srcMax}
-		d.IntervalCalculation(&seedInterval, srcInterval, diff)
+		for _, current := range seedInterval {
+			d.IntervalCalculation(current, srcInterval, diff)
+		}
+
 	}
 	return 0
 }
 
-func (d *Day5) IntervalCalculation(seeds *[]Interval, src Interval, diff int) {
-	expandedIntervals := make([][]Interval, 0)
-	for _, cur := range *seeds {
-		overlap := (cur.Start <= src.End) && (src.Start <= cur.End)
-		if overlap {
-			// Get all bound and sort it
-			intervalNums := []int{
-				cur.Start,
-				cur.End,
-				src.Start,
-				src.End,
-			}
-			slices.Sort(intervalNums)
-
-			// if perfect overlapping
-			splitted := make([]Interval, 0, 3)
-			if intervalNums[0] == intervalNums[1] && intervalNums[2] == intervalNums[3] {
-				temp := []Interval{
-					{intervalNums[1], intervalNums[2]},
-					{intervalNums[1], intervalNums[2]},
-					{intervalNums[1], intervalNums[2]},
-				}
-				splitted = append(splitted, temp...)
-
-			} else {
-				temp := []Interval{
-					{intervalNums[0], intervalNums[1] - 1},
-					{intervalNums[1], intervalNums[2]},
-					{intervalNums[2] + 1, intervalNums[3]},
-				}
-				splitted = append(splitted, temp...)
-			}
-			fmt.Printf("interval (%v, %v)\n", splitted[1].Start, splitted[1].End)
-			fmt.Printf("shifted (%v, %v)\n\n", splitted[1].Start+diff, splitted[1].End+diff)
-
-			expandedIntervals = append(expandedIntervals, splitted)
-		}
+func (d *Day5) IntervalCalculation(seed Interval, src Interval, diff int) {
+	overlap := (seed.Start <= src.End) && (src.Start <= seed.End)
+	if !overlap {
+		return
 	}
-	// fmt.Println(expandedIntervals)
+
+	// Get all bound and sort it
+	intervalNums := []int{
+		seed.Start,
+		seed.End,
+		src.Start,
+		src.End,
+	}
+	slices.Sort(intervalNums)
+
+	splitted := make([]Interval, 0, 3)
+	// if perfect overlapping
+	if intervalNums[0] == intervalNums[1] && intervalNums[2] == intervalNums[3] {
+		temp := []Interval{
+			{intervalNums[1], intervalNums[2]},
+			{intervalNums[1], intervalNums[2]},
+			{intervalNums[1], intervalNums[2]},
+		}
+		splitted = append(splitted, temp...)
+
+	} else {
+		temp := []Interval{
+			{intervalNums[0], intervalNums[1] - 1},
+			{intervalNums[1], intervalNums[2]},
+			{intervalNums[2] + 1, intervalNums[3]},
+		}
+		splitted = append(splitted, temp...)
+	}
+	for _, cur := range splitted {
+		d.IntervalCalculation(cur, src, diff)
+	}
+	fmt.Printf("interval (%v, %v)\n", splitted[1].Start, splitted[1].End)
+	fmt.Printf("shifted (%v, %v)\n\n", splitted[1].Start+diff, splitted[1].End+diff)
+
 }
 
 /*func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
