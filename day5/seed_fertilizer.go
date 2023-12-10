@@ -117,13 +117,6 @@ func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
 
 				// if perfect overlapping
 				if intervalNums[0] == intervalNums[1] && intervalNums[2] == intervalNums[3] {
-					// fmt.Printf("{%v, %v} - {%v,%v} - {%v, %v}\n",
-					// 	intervalNums[1],
-					// 	intervalNums[2],
-					// 	intervalNums[1],
-					// 	intervalNums[2],
-					// 	intervalNums[1],
-					// 	intervalNums[2])
 					newIntervals := [3]Interval{
 						{intervalNums[1], intervalNums[2]},
 						{intervalNums[1], intervalNums[2]},
@@ -131,13 +124,6 @@ func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
 					}
 					expandedIntervals = append(expandedIntervals, newIntervals)
 				} else {
-					// fmt.Printf("{%v, %v} - {%v,%v} - {%v, %v}\n",
-					// 	intervalNums[0],
-					// 	intervalNums[1]-1,
-					// 	intervalNums[1],
-					// 	intervalNums[2],
-					// 	intervalNums[2]+1,
-					// 	intervalNums[3])
 					newIntervals := [3]Interval{
 						{intervalNums[0], intervalNums[1] - 1},
 						{intervalNums[1], intervalNums[2]},
