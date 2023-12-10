@@ -76,7 +76,7 @@ type Interval struct {
 	End   int
 }
 
-func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
+/*func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
 	lines, err := reader(d.Dnum, filename)
 	if err != nil {
 		log.Fatal(err)
@@ -110,6 +110,7 @@ func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
 	}
 	return 0
 }
+*/
 
 func (d *Day5) IntervalCalculation(seed Interval, src Interval, diff int) {
 	overlap := (seed.Start <= src.End) && (src.Start <= seed.End)
@@ -144,11 +145,11 @@ func (d *Day5) IntervalCalculation(seed Interval, src Interval, diff int) {
 		}
 		splitted = append(splitted, temp...)
 	}
-	for _, cur := range splitted {
-		d.IntervalCalculation(cur, src, diff)
-	}
+	// for _, cur := range splitted {
+	// 	d.IntervalCalculation(cur, src, diff)
+	// }
 	fmt.Printf("interval (%v, %v)\n", splitted[1].Start, splitted[1].End)
-	fmt.Printf("shifted (%v, %v)\n\n", splitted[1].Start+diff, splitted[1].End+diff)
+	fmt.Printf("shifted (%v, %v)\n", splitted[1].Start+diff, splitted[1].End+diff)
 
 }
 
