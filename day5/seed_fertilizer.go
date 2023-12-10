@@ -71,16 +71,17 @@ func (d *Day5) PartOne(filename string, reader utils.AocReader) int {
 	return slices.Min(results)
 }
 
+type Interval struct {
+	Start int
+	End   int
+}
+
 func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
 	lines, err := reader(d.Dnum, filename)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	type Interval struct {
-		Start int
-		End   int
-	}
 	seedStr := strings.Fields(strings.Split(lines[0], ":")[1])
 	seedInterval := []Interval{}
 	for i := 0; i < len(seedStr); i += 2 {
@@ -102,41 +103,49 @@ func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
 		// desMin, _ := strconv.Atoi(srcDesMapper[0])
 		// diff := desMin - srcMin
 		srcInterval := Interval{srcMin, srcMax}
-		expandedIntervals := make([][3]Interval, 0)
-		for _, current := range seedInterval {
-			overlap := (current.Start <= srcInterval.End) && (srcInterval.Start <= current.End)
-			if overlap {
-				fmt.Println("overlapp")
-				intervalNums := []int{
-					current.Start,
-					current.End,
-					srcInterval.Start,
-					srcInterval.End,
-				}
-				slices.Sort(intervalNums)
-
-				// if perfect overlapping
-				if intervalNums[0] == intervalNums[1] && intervalNums[2] == intervalNums[3] {
-					newIntervals := [3]Interval{
-						{intervalNums[1], intervalNums[2]},
-						{intervalNums[1], intervalNums[2]},
-						{intervalNums[1], intervalNums[2]},
-					}
-					expandedIntervals = append(expandedIntervals, newIntervals)
-				} else {
-					newIntervals := [3]Interval{
-						{intervalNums[0], intervalNums[1] - 1},
-						{intervalNums[1], intervalNums[2]},
-						{intervalNums[2] + 1, intervalNums[3]},
-					}
-					expandedIntervals = append(expandedIntervals, newIntervals)
-				}
-			}
-		}
-		fmt.Println(expandedIntervals)
+		d.IntervalCalculation(&seedInterval, srcInterval)
 		fmt.Println()
 	}
 	return 0
+}
+
+func (d *Day5) IntervalCalculation(seeds *[]Interval, src Interval) {
+	expandedIntervals := make([][]Interval, 0)
+	for _, cur := range *seeds {
+		overlap := (cur.Start <= src.End) && (src.Start <= cur.End)
+		if overlap {
+			// Get all bound and sort it
+			intervalNums := []int{
+				cur.Start,
+				cur.End,
+				src.Start,
+				src.End,
+			}
+			slices.Sort(intervalNums)
+
+			// if perfect overlapping
+			splitted := make([]Interval, 0, 3)
+			if intervalNums[0] == intervalNums[1] && intervalNums[2] == intervalNums[3] {
+				temp := []Interval{
+					{intervalNums[1], intervalNums[2]},
+					{intervalNums[1], intervalNums[2]},
+					{intervalNums[1], intervalNums[2]},
+				}
+				splitted = append(splitted, temp...)
+
+			} else {
+				temp := []Interval{
+					{intervalNums[0], intervalNums[1] - 1},
+					{intervalNums[1], intervalNums[2]},
+					{intervalNums[2] + 1, intervalNums[3]},
+				}
+				splitted = append(splitted, temp...)
+			}
+			expandedIntervals = append(expandedIntervals, splitted)
+		}
+	}
+	fmt.Println(expandedIntervals)
+	fmt.Println()
 }
 
 /*func (d *Day5) PartTwo(filename string, reader utils.AocReader) int {
