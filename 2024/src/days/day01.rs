@@ -5,7 +5,7 @@ use crate::{Solution, SolutionPair};
 ///////////////////////////////////////////////////////////////////////////////
 
 pub fn solve() -> SolutionPair {
-    let file = read_to_string("input/day01_test.txt").expect("Failed to open input file");
+    let file = read_to_string("input/day01.txt").expect("Failed to open input file");
     let lines: Vec<&str> = file.trim().split("\n").collect();
 
     let len = lines.len();
@@ -76,8 +76,9 @@ fn merge(left: &[i32], right: &[i32], arr: &mut [i32]) {
     while i < left.len() {
         arr[k] = left[i];
         i += 1;
-        j += 1;
+        k += 1;
     }
+
     while j < right.len() {
         arr[k] = right[j];
         j += 1;
