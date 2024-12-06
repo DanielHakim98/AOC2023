@@ -5,7 +5,7 @@ use crate::{Solution, SolutionPair};
 ///////////////////////////////////////////////////////////////////////////////
 
 pub fn solve() -> SolutionPair {
-    let file = read_to_string("input/day01.txt").expect("Failed to open input file");
+    let file = read_to_string("input/day01_test.txt").expect("Failed to open input file");
     let lines: Vec<&str> = file.trim().split("\n").collect();
 
     let len = lines.len();
@@ -25,15 +25,17 @@ pub fn solve() -> SolutionPair {
 
     let mut total = 0;
     for i in 0..len {
-        println!("{:?} {:?}", left_vec[i], right_vec[i]);
+        let left_val = left_vec[i];
+        let right_val = right_vec[i];
+
         total += {
-            let diff = left_vec[i] - right_vec[i];
+            let diff = left_val - right_val;
             if diff < 0 {
                 -diff
             } else {
                 diff
             }
-        }
+        };
     }
 
     let sol1: u64 = total as u64;
