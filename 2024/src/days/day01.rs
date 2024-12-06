@@ -14,31 +14,73 @@ pub fn solve() -> SolutionPair {
     for line in lines {
         let v: Vec<i32> = line
             .split_whitespace()
-            .map(|e| e.parse::<i32>().unwrap_or_default())
+            .map(|e| e.parse::<i32>().unwrap())
             .collect();
         left_vec.push(v[0]);
         right_vec.push(v[1]);
     }
 
     merge_sort(&mut left_vec);
+    merge_sort(&mut right_vec);
 
-    let sol1: u64 = 0;
+    let mut total = 0;
+    for i in 0..len {
+        println!("{:?} {:?}", left_vec[i], right_vec[i]);
+        total += {
+            let diff = left_vec[i] - right_vec[i];
+            if diff < 0 {
+                -diff
+            } else {
+                diff
+            }
+        }
+    }
+
+    let sol1: u64 = total as u64;
     let sol2: u64 = 0;
 
     (Solution::from(sol1), Solution::from(sol2))
 }
 
-fn merge_sort(vec: &mut Vec<i32>) {
+fn merge_sort(vec: &mut [i32]) {
     let len = vec.len();
     if len <= 1 {
         return;
     }
 
+    let mut temp = vec.to_vec();
+
     let mid = len / 2;
-    let left = &mut vec[0..mid].to_vec();
-    let right = &mut vec[mid..].to_vec();
-    println!("left: {:?}", left);
-    println!("right: {:?}", right);
+    let (left, right) = vec.split_at_mut(mid);
+
     merge_sort(left);
     merge_sort(right);
+    merge(left, right, &mut temp);
+
+    vec.copy_from_slice(&temp);
+}
+
+fn merge(left: &[i32], right: &[i32], arr: &mut [i32]) {
+    let (mut i, mut j, mut k) = (0, 0, 0);
+    while i < left.len() && j < right.len() {
+        if left[i] < right[j] {
+            arr[k] = left[i];
+            i += 1;
+        } else {
+            arr[k] = right[j];
+            j += 1;
+        }
+        k += 1;
+    }
+
+    while i < left.len() {
+        arr[k] = left[i];
+        i += 1;
+        j += 1;
+    }
+    while j < right.len() {
+        arr[k] = right[j];
+        j += 1;
+        k += 1;
+    }
 }
