@@ -1,16 +1,19 @@
-use std::fs::read_to_string;
+use std::{collections::HashMap, fs::read_to_string};
 
 use crate::{Solution, SolutionPair};
 
 ///////////////////////////////////////////////////////////////////////////////
 
 pub fn solve() -> SolutionPair {
-    let file = read_to_string("input/day01_test.txt").expect("Failed to open input file");
+    let file = read_to_string("input/day01.txt").expect("Failed to open input file");
     let lines: Vec<&str> = file.trim().split("\n").collect();
 
     let len = lines.len();
     let mut left_vec: Vec<i32> = Vec::with_capacity(len);
     let mut right_vec: Vec<i32> = Vec::with_capacity(len);
+
+    let mut occurences: HashMap<i32, i32> = HashMap::new();
+
     for line in lines {
         let v: Vec<i32> = line
             .split_whitespace()
@@ -18,12 +21,15 @@ pub fn solve() -> SolutionPair {
             .collect();
         left_vec.push(v[0]);
         right_vec.push(v[1]);
+
+        *occurences.entry(v[1]).or_insert(0) += 1;
     }
 
     merge_sort(&mut left_vec);
     merge_sort(&mut right_vec);
 
     let mut total = 0;
+    let mut total_2 = 0;
     for i in 0..len {
         let left_val = left_vec[i];
         let right_val = right_vec[i];
@@ -36,10 +42,14 @@ pub fn solve() -> SolutionPair {
                 diff
             }
         };
+
+        if occurences.contains_key(&left_val) {
+            total_2 += left_val * occurences[&left_val];
+        }
     }
 
     let sol1: u64 = total as u64;
-    let sol2: u64 = 0;
+    let sol2: u64 = total_2 as u64;
 
     (Solution::from(sol1), Solution::from(sol2))
 }
