@@ -4,7 +4,7 @@ use std::fs::read_to_string;
 ///////////////////////////////////////////////////////////////////////////////
 
 pub fn solve() -> SolutionPair {
-    let file = read_to_string("input/day02.txt").expect("Failed to open input file");
+    let file = read_to_string("inputs/day02.txt").expect("Failed to open input file");
     let lines: Vec<&str> = file.trim().split("\n").collect();
     let mut total_safe = 0;
     for line in lines {

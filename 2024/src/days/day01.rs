@@ -5,7 +5,7 @@ use crate::{Solution, SolutionPair};
 ///////////////////////////////////////////////////////////////////////////////
 
 pub fn solve() -> SolutionPair {
-    let file = read_to_string("input/day01.txt").expect("Failed to open input file");
+    let file = read_to_string("inputs/day01.txt").expect("Failed to open input file");
     let lines: Vec<&str> = file.trim().split("\n").collect();
 
     let len = lines.len();
