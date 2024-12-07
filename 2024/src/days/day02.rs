@@ -47,13 +47,32 @@ fn count_report_with_dampener(lines: &Vec<&str>) -> i32 {
         if safe {
             total_safe += 1;
         } else {
-            println!("{:?} , unsafe_indexes: {:?}", report, unsafe_indexes);
+            // println!("{:?} , unsafe_indexes: {:?}", report, unsafe_indexes);
             let mut report_no_prev = report.clone();
             report_no_prev.remove(unsafe_indexes.0);
             let mut report_no_cur = report.clone();
             report_no_cur.remove(unsafe_indexes.1);
-            println!("{:?} {:?}", report_no_prev, report_no_cur);
-            if is_really_safe(&report_no_prev) || is_really_safe(&report_no_cur) {
+            // println!("{:?} {:?}", report_no_prev, report_no_cur);
+
+            let report_no_prev_prev = {
+                if unsafe_indexes.0 == 1 {
+                    let mut t = report.clone();
+                    t.remove(0);
+                    t
+                } else {
+                    Vec::new()
+                }
+            };
+
+            let left = is_really_safe(&report_no_prev);
+            let right = is_really_safe(&report_no_cur);
+            let special = is_really_safe(&report_no_prev_prev);
+            // println!(
+            //     "report_no_prev_prev?: {} report_no_prev?: {} report_no_cur?: {}\n",
+            //     special, left, right
+            // );
+
+            if left || right || special {
                 total_safe += 1;
             }
         }
@@ -63,6 +82,9 @@ fn count_report_with_dampener(lines: &Vec<&str>) -> i32 {
 }
 
 fn is_really_safe(report: &Vec<i32>) -> bool {
+    if report.len() == 0 {
+        return false;
+    }
     let mut is_increasing = true;
     let mut safe = true;
     for (i, level) in report.iter().enumerate() {
