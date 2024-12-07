@@ -67,10 +67,6 @@ fn count_report_with_dampener(lines: &Vec<&str>) -> i32 {
             let left = is_really_safe(&report_no_prev);
             let right = is_really_safe(&report_no_cur);
             let special = is_really_safe(&report_no_prev_prev);
-            // println!(
-            //     "report_no_prev_prev?: {} report_no_prev?: {} report_no_cur?: {}\n",
-            //     special, left, right
-            // );
 
             if left || right || special {
                 total_safe += 1;
