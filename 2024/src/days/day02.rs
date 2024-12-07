@@ -4,7 +4,7 @@ use std::fs::read_to_string;
 ///////////////////////////////////////////////////////////////////////////////
 
 pub fn solve() -> SolutionPair {
-    let file = read_to_string("input/day02_test.txt").expect("Failed to open input file");
+    let file = read_to_string("input/day02.txt").expect("Failed to open input file");
     let lines: Vec<&str> = file.trim().split("\n").collect();
     let mut total_safe = 0;
     for line in lines {
@@ -24,7 +24,7 @@ pub fn solve() -> SolutionPair {
                 is_increasing = next_diff > 0;
 
                 // Check difference
-                if next_diff < 1 || next_diff > 3 {
+                if next_diff.abs() < 1 || next_diff.abs() > 3 {
                     safe = false;
                     break;
                 }
@@ -40,7 +40,8 @@ pub fn solve() -> SolutionPair {
                     break;
                 }
 
-                if prev_diff < 1 || prev_diff > 3 {
+                // Check difference
+                if prev_diff.abs() < 1 || prev_diff.abs() > 3 {
                     safe = false;
                     break;
                 }
@@ -58,11 +59,11 @@ pub fn solve() -> SolutionPair {
                 }
 
                 // Check difference
-                if next_diff < 1 || next_diff > 3 {
+                if next_diff.abs() < 1 || next_diff.abs() > 3 {
                     safe = false;
                     break;
                 }
-                if prev_diff < 1 || prev_diff > 3 {
+                if prev_diff.abs() < 1 || prev_diff.abs() > 3 {
                     safe = false;
                     break;
                 }
@@ -71,7 +72,6 @@ pub fn solve() -> SolutionPair {
         if safe {
             total_safe += 1;
         }
-        println!();
     }
 
     let sol1: u64 = total_safe as u64;
