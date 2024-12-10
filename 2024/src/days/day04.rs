@@ -4,13 +4,20 @@ use crate::{Solution, SolutionPair};
 
 pub fn solve() -> SolutionPair {
     let file = read_to_string("inputs/day04.txt").expect("Failed to open input file");
+
+    let sol1: u64 = part1(&file) as u64;
+    let sol2: u64 = 0 as u64;
+
+    (Solution::from(sol1), Solution::from(sol2))
+}
+
+fn part1(file: &str) -> i32 {
     let mut coordinates: HashMap<(usize, usize), char> = HashMap::new();
     for (i, line) in file.trim().split("\n").enumerate() {
         for (j, ch) in line.chars().enumerate() {
             coordinates.insert((i, j), ch);
         }
     }
-
     // * To be honest, I know the rough idea to solve it, but I don't know how to do it in Rust, so I end up uses ChatGPT :(
     let get_safe = |row: usize, col: usize| coordinates.get(&(row, col)).unwrap_or(&' ');
     let directions: [(&str, Box<dyn Fn(usize, usize, char) -> String>); 8] = [
@@ -121,8 +128,5 @@ pub fn solve() -> SolutionPair {
             }
         }
     }
-    let sol1: u64 = total as u64;
-    let sol2: u64 = 0 as u64;
-
-    (Solution::from(sol1), Solution::from(sol2))
+    total
 }
