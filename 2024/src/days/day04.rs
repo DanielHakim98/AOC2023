@@ -4,11 +4,39 @@ use crate::{Solution, SolutionPair};
 
 pub fn solve() -> SolutionPair {
     let file = read_to_string("inputs/day04.txt").expect("Failed to open input file");
-
     let sol1: u64 = part1(&file) as u64;
-    let sol2: u64 = 0 as u64;
+    let sol2: u64 = part2(&file) as u64;
 
     (Solution::from(sol1), Solution::from(sol2))
+}
+
+fn part2(file: &str) -> i32 {
+    let mut coordinates: HashMap<(usize, usize), char> = HashMap::new();
+    for (i, line) in file.trim().split("\n").enumerate() {
+        for (j, ch) in line.chars().enumerate() {
+            coordinates.insert((i, j), ch);
+        }
+    }
+
+    let get_safe = |row: usize, col: usize| coordinates.get(&(row, col)).unwrap_or(&' ');
+    let mut total = 0;
+    for (&(row, col), &ch) in &coordinates {
+        if ch == 'A' {
+            let upright = get_safe(row - 1, col + 1);
+            let downright = get_safe(row + 1, col + 1);
+            let upleft = get_safe(row - 1, col - 1);
+            let downleft = get_safe(row + 1, col - 1);
+            let diagonal_forward_slash = format!("{}{}{}", downleft, ch, upright);
+            let diagonal_backward_slash = format!("{}{}{}", upleft, ch, downright);
+
+            if (diagonal_backward_slash == "MAS" || diagonal_backward_slash == "SAM")
+                && (diagonal_forward_slash == "MAS" || diagonal_forward_slash == "SAM")
+            {
+                total += 1;
+            }
+        }
+    }
+    total
 }
 
 fn part1(file: &str) -> i32 {
