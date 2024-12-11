@@ -3,6 +3,14 @@ use std::{collections::HashMap, fs::read_to_string};
 
 pub fn solve() -> SolutionPair {
     let file = read_to_string("inputs/day05.txt").expect("Failed to open input file");
+
+    let sol1: u64 = part1(&file) as u64;
+    let sol2: u64 = 0 as u64;
+
+    (Solution::from(sol1), Solution::from(sol2))
+}
+
+fn part1(file: &str) -> i32 {
     let mut rules: Vec<(i32, i32)> = Vec::new();
     let mut total = 0;
     for line in file.trim().split("\n") {
@@ -53,9 +61,5 @@ pub fn solve() -> SolutionPair {
             total += mid;
         }
     }
-
-    let sol1: u64 = total as u64;
-    let sol2: u64 = 0 as u64;
-
-    (Solution::from(sol1), Solution::from(sol2))
+    total
 }
