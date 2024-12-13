@@ -11,12 +11,11 @@ pub fn solve() -> SolutionPair {
 }
 
 fn part2(file: &str) -> i32 {
-    // let mut rules: Vec<Vec<usize>> = vec![Vec::new(); 100];
     let mut rules: HashMap<usize, Vec<usize>> = HashMap::new();
     let mut total = 0;
     for line in file.trim().split("\n") {
         if line == "" {
-            println!("{:#?}", rules);
+            // println!("{:#?}", rules);
             continue;
         }
 
@@ -31,7 +30,6 @@ fn part2(file: &str) -> i32 {
                 .entry(left as usize)
                 .or_insert_with(|| Vec::new())
                 .push(right as usize);
-            // rules[left as usize].push(right as usize);
             continue;
         }
 
@@ -45,16 +43,22 @@ fn part2(file: &str) -> i32 {
             let temp: Vec<usize> = Vec::new();
             let out_nodes = &rules.get(&(node as usize)).unwrap_or(&temp);
             let next_node = update[i + 1];
-            print!("update[{i}] = {} -->", node);
-            print!(" rules[update[{i}]] = {:?} ", out_nodes);
-            if !out_nodes.contains(&(next_node as usize)) {
-                in_order = false;
-                println!();
-                break;
+            // print!("node = {} ", node);
+            // print!("--->{:?} ", out_nodes);
+            // println!("next_node = {}", next_node);
+
+            let not_next_node_in_out_nodes = !out_nodes.contains(&(next_node as usize));
+            if not_next_node_in_out_nodes && rules.contains_key(&(node as usize)) {
+                if rules.contains_key(&(next_node as usize))
+                    && rules[&(next_node as usize)].contains(&(node as usize))
+                {
+                    in_order = false;
+                    break;
+                }
             }
-            println!()
         }
         if !in_order {
+            // println!("not in order: {:?}", update);
             let mut sorted: Vec<usize> = update.clone().into_iter().map(|e| e as usize).collect();
 
             sorted.sort_by(|&node, &next_node| {
@@ -62,15 +66,10 @@ fn part2(file: &str) -> i32 {
                 let right_len = rules.get(&next_node).map_or(0, |out_nodes| out_nodes.len());
                 right_len.cmp(&left_len)
             });
-
-            // for &node in &sorted {
-            //     let length = rules.get(&node).map_or(0, |out_nodes| out_nodes.len());
-            //     println!("node: {} out_nodes: {:?}", node, length);
-            // }
             total += sorted[&sorted.len() / 2];
         }
 
-        println!()
+        // println!()
     }
 
     total as i32
