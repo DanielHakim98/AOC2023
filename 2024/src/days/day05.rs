@@ -2,7 +2,7 @@ use crate::{Solution, SolutionPair};
 use std::{collections::HashMap, fs::read_to_string};
 
 pub fn solve() -> SolutionPair {
-    let file = read_to_string("inputs/day05_test.txt").expect("Failed to open input file");
+    let file = read_to_string("inputs/day05.txt").expect("Failed to open input file");
 
     let sol1: u64 = part1(&file) as u64;
     let sol2: u64 = part2(&file) as u64;
@@ -55,20 +55,25 @@ fn part2(file: &str) -> i32 {
             println!()
         }
         if !in_order {
-            let sorted: Vec<usize> = Vec::with_capacity(update.len());
-            for i in 0..update.len() {
-                let cur_node = update[i];
-                let temp: Vec<usize> = Vec::new();
-                let length = &rules.get(&(cur_node as usize)).unwrap_or(&temp).len();
-                println!("node: {} out_nodes: {:?}", cur_node, length);
-            }
-            // total += update[&update.len() / 2];
+            let mut sorted: Vec<usize> = update.clone().into_iter().map(|e| e as usize).collect();
+
+            sorted.sort_by(|&node, &next_node| {
+                let left_len = rules.get(&node).map_or(0, |out_nodes| out_nodes.len());
+                let right_len = rules.get(&next_node).map_or(0, |out_nodes| out_nodes.len());
+                right_len.cmp(&left_len)
+            });
+
+            // for &node in &sorted {
+            //     let length = rules.get(&node).map_or(0, |out_nodes| out_nodes.len());
+            //     println!("node: {} out_nodes: {:?}", node, length);
+            // }
+            total += sorted[&sorted.len() / 2];
         }
 
         println!()
     }
 
-    total
+    total as i32
 }
 
 fn part1(file: &str) -> i32 {
