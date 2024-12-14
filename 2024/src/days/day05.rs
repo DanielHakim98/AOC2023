@@ -2,7 +2,7 @@ use crate::{Solution, SolutionPair};
 use std::{collections::HashMap, fs::read_to_string};
 
 pub fn solve() -> SolutionPair {
-    let file = read_to_string("inputs/day05.txt").expect("Failed to open input file");
+    let file = read_to_string("inputs/day05_basic.txt").expect("Failed to open input file");
 
     let sol1: u64 = part1(&file) as u64;
     let sol2: u64 = part2(&file) as u64;
@@ -15,7 +15,7 @@ fn part2(file: &str) -> i32 {
     let mut total = 0;
     for line in file.trim().split("\n") {
         if line == "" {
-            // println!("{:#?}", rules);
+            println!("{:#?}", rules);
             continue;
         }
 
@@ -30,6 +30,7 @@ fn part2(file: &str) -> i32 {
                 .entry(left as usize)
                 .or_insert_with(|| Vec::new())
                 .push(right as usize);
+            rules.entry(right as usize).or_insert_with(|| Vec::new());
             continue;
         }
 
@@ -39,26 +40,28 @@ fn part2(file: &str) -> i32 {
             .collect();
         let mut in_order = true;
         for i in 0..update.len() - 1 {
-            let node = update[i];
+            let node = update[i] as usize;
+            let next_node = update[i + 1] as usize;
             let temp: Vec<usize> = Vec::new();
-            let out_nodes = &rules.get(&(node as usize)).unwrap_or(&temp);
-            let next_node = update[i + 1];
-            // print!("node = {} ", node);
-            // print!("--->{:?} ", out_nodes);
-            // println!("next_node = {}", next_node);
+            let out_nodes = &rules.get(&(node)).unwrap_or(&temp);
+            print!("node({})", node);
+            print!("--->{:?} ", out_nodes);
+            println!("next_node = {}", next_node);
 
-            let not_next_node_in_out_nodes = !out_nodes.contains(&(next_node as usize));
-            if not_next_node_in_out_nodes && rules.contains_key(&(node as usize)) {
-                if rules.contains_key(&(next_node as usize))
-                    && rules[&(next_node as usize)].contains(&(node as usize))
-                {
+            let is_next_node_in_outnodes = out_nodes.contains(&next_node);
+            let is_next_node_as_dependecies = rules.contains_key(&next_node);
+            if !is_next_node_in_outnodes && is_next_node_as_dependecies {
+                let next_node_outnodes = &rules.get(&next_node).unwrap_or(&temp);
+                let is_cur_node_in_next_node_outnodes = next_node_outnodes.contains(&node);
+                if is_cur_node_in_next_node_outnodes {
+                    print!("next_node({})", next_node);
+                    println!("--->{:?} ", next_node_outnodes);
                     in_order = false;
                     break;
                 }
             }
         }
         if !in_order {
-            // println!("not in order: {:?}", update);
             let mut sorted: Vec<usize> = update.clone().into_iter().map(|e| e as usize).collect();
 
             sorted.sort_by(|&node, &next_node| {
@@ -69,7 +72,7 @@ fn part2(file: &str) -> i32 {
             total += sorted[&sorted.len() / 2];
         }
 
-        // println!()
+        println!()
     }
 
     total as i32
