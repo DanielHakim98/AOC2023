@@ -35,9 +35,36 @@ def part_1(path: str) -> int:
 
 
 def part_2(path: str) -> int:
+    total = 0
     with open(path) as f:
-        input_data = f.read().strip()
-    return 0
+        lines = f.read().strip().split("\n")
+        # At first, I thought that I need to implement sliding window to solve this
+        # but turns out I can just do it this way
+        for line in lines:
+            has_double_pair = False
+            has_triplet = False
+            # to store the index of the first pair, later can be used to check the interval
+            pairs: dict[str, int] = {}
+            for i in range(1, len(line)):
+                # Check for double pair
+                pair = line[i - 1] + line[i]
+                if pair in pairs:
+                    start = pairs[pair]
+                    interval = [start, start + 1]
+                    if interval[1] != i - 1:
+                        has_double_pair = True
+                else:
+                    pairs[pair] = i - 1
+
+                # Check for triplet with 1 distinct letter at middle
+                if i > 1:
+                    triplet = line[i - 2] + line[i - 1] + line[i]
+                    if triplet[0] == triplet[2] and triplet[0] != triplet[1]:
+                        has_triplet = True
+
+            if has_double_pair and has_triplet:
+                total += 1
+    return total
 
 
 @pytest.fixture
@@ -56,6 +83,12 @@ def test_part_1(temp_file_generator):
     )
     path = temp_file_generator(input_content)
     assert part_1(path) == 2
+
+
+def test_part_2(temp_file_generator):
+    input_content = "qjhvhtzxzqqjkmpb\nxxyxx\nuurcxstgmygtbstg\nieodomkazucvgmuy"
+    path = temp_file_generator(input_content)
+    assert part_2(path) == 2
 
 
 if __name__ == "__main__":
